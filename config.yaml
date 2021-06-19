@@ -4,7 +4,7 @@
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
 
 title: TealQuaternion # Website name
-baseurl: 'https://tealquaternion.netlify.app/post/' # Website URL
+baseurl: 'https://tealquaternion.netlify.app/' # Website URL
 copyright: '' # Footer text, e.g. '© {year} Me'
 
 ############################

@@ -14,6 +14,9 @@ image:
   focal_point: ''
 projects: []
 tags: []
+output:
+  blogdown::html_page:
+    toc: true
 ---
 
 # Summary

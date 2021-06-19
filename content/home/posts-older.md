@@ -15,7 +15,7 @@ subtitle = ""
   page_type = "post"
   
   # Choose how much pages you would like to display (0 = all pages)
-  count = 14
+  count = 0
   
   # Choose how many pages you would like to offset by
   offset = 1
@@ -30,11 +30,6 @@ subtitle = ""
     publication_type = ""
     author = ""
     exclude_featured = false
-    
-  [content.archive]
-    enable = true
-    text = "See all blog posts"
-    link = "post/"
     
 [design]
   columns = "1"
