@@ -1,0 +1,74 @@
+---
+title: 'An Explainer: Convex Programming Approach to Powered Descent Guidance for
+  Mars Landing'
+summary: An explanation of a paper on solving the guidance problem for pinpoint landing
+  with rockets.
+date: '2021-06-11T18:13:10.351Z'
+categories: []
+author: admin
+lastMod: '2021-06-11T18:13:10.351Z'
+featured: yes
+draft: no
+image:
+  caption: ''
+  focal_point: ''
+projects: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>The paper tries to solve the problem of ‘guiding a lander spacecraft to a given target on the planet’s surface with an accuracy of a fewer than several hundred meters’ by ‘finding the fuel optimal trajectory that takes a lander with a given initial state (position and velocity) to a prescribed final state’. The lander is modelled ‘as a point mass with a single thruster’ ‘in a uniform gravity field’, with decreasing mass and thrusters that can be gimballed and throttled subject to constraints. As ‘mars pinpoint landing requires real-time onboard computation of the optimal trajectory’ the optimisation problem needs to be convex however, the thrust magnitude constraint is a nonconvex constraint. To convexify this problem ‘a slack variable is introduced to relax the nonconvex constraint’ and ‘it is shown that any optimal solution for the resulting relaxed problem is also optimal for the original problem’. ‘Then we approximate the relaxed optimal control problem as a finite-dimensional parameter optimization problem via representing the control input by a finite set of basis functions, which leads to a finite-dimensional convex parameter optimization problem; more specifically it leads to a SOCP. Additionally, we consider thruster pointing constraints and extend our convex solution approach to handle this constraint via a heuristic. Finally, we present some simulation results for an example spacecraft’.</p>
+</div>
+<div id="problem-formulation" class="section level1">
+<h1>Problem Formulation</h1>
+<p>The paper assumes that:</p>
+<ul>
+<li>There is a uniform gravity field as the landing mission starts at a low altitude relative to planet’s radius.</li>
+<li>Other forces such as aerodynamic forces are ignored and treated as disturbances</li>
+<li>The lander is a point mass, so we ignore rotational forces</li>
+</ul>
+<p>The dynamics of the lander are expressed by:</p>
+<p><span class="math display">\[\begin{align*}
+  \ddot{r}(t) &amp;= g + \frac{T_c(t)}{m(t)} \\
+  \dot{m}(t) &amp;= - \alpha ||T_c(t)||
+\end{align*}\]</span></p>
+<p>The only two forces acting on the rocket are weight and the net thrust force. Additionally, the mass decreases proportionally to the magnitude of the thrust vector.</p>
+<p>The initial conditions are <span class="math inline">\(m(0) = m_{wet}\)</span>, <span class="math inline">\(r(0) = r_0\)</span>, <span class="math inline">\(\dot{r}(0) = \dot{r}_0\)</span>.</p>
+<p>The magnitude of the net thrust vector is constrained by <span class="math inline">\(0 &lt; \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \text{ for all } t \in [0, t_f]\)</span>. The final position and velocity are set to 0, <span class="math inline">\(r(t_{f}) =\dot{r}(t_{f}) = 0\)</span>. Additionally the lander starts off above the surface and never goes below it, <span class="math inline">\(r_{1}(0) &gt; 0\)</span>, <span class="math inline">\(r_{1}(t) \geq 0 \ \ \text{for all} \ t \in [0, t_{f}]\)</span>. Any additional constraints are assumed to have the general form of <span class="math inline">\(||S_j x(t) - v_j|| + c^T_j x(t) + a_j \leq 0\)</span>. The paper imposes a bound on the velocity <span class="math inline">\(|| \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f]\)</span> and a “glide slope” constraint <span class="math inline">\(\displaystyle \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}\)</span></p>
+<div id="problem-1" class="section level3">
+<h3>Problem 1</h3>
+<p><span class="math display">\[\begin{align*}
+  \max_{t_f, T_c(\bullet)} m(t_f) &amp;= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} ||T_c(t)|| dt \\
+  \text{subject to } \ddot{r}(t) &amp;= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} \dot{m}(t) = - \alpha ||T_c(t)|| \\
+  0 &lt; \rho_{1} &amp;\leq ||T_c(t)|| \leq \rho_{2}, \hspace{0.6cm} r_1(t) \geq 0 \\
+  ||S_j x(t) - v_j|| &amp;+ c^T_j x(t) + a_j \leq 0, \hspace{0.5cm} j = 1, \ldots, n_s \\
+  m(0) = m_{wet}&amp;, \hspace{0.8cm} r(0) = r_0, \hspace{0.9cm} \dot{r}(0) = \dot{r}_0 \\
+  &amp;\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0
+\end{align*}\]</span></p>
+<p><span class="math inline">\(0 &lt; \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \text{ for all } t \in [0, t_f]\)</span> is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.</p>
+</div>
+</div>
+<div id="convexification-of-the-control-magnitude-constraint" class="section level1">
+<h1>Convexification of the Control Magnitude Constraint</h1>
+<p>In this section the paper formulates a modified version of <a href="#problem-1">Problem 1</a> and shows that an optimal solution of the modified problem is optimal for <a href="#problem-1">Problem 1</a> and that it exists</p>
+<div id="problem-2" class="section level3">
+<h3>Problem 2</h3>
+<p><span class="math display">\[\begin{align*}
+  \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&amp;dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) \\
+  &amp;||T_c(t)|| \leq \Gamma \\
+  0 &amp;&lt; \rho_1 \leq \Gamma(t) \leq \rho_2 \\
+  \ddot{r}(t) &amp;= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} r_1(t) \geq 0 \\
+  ||S_j x(t) - v_j|| &amp;+ c^T_j x(t) + a_j \leq 0, \hspace{1cm} j = 1, \ldots, n_s \\
+  m(0) &amp;= m_{wet}, \hspace{0.6cm} r(0) = r_0, \hspace{0.5cm} \dot{r}(0) = \dot{r}_0 \\
+  &amp;\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
+\end{align*}\]</span></p>
+<p>We will now prove that an optimal solution of <a href="#problem-2">Problem 2</a> is also an optimal solution of <a href="#problem-1">Problem 1</a>, which allows us to solve <a href="#problem-1">Problem 1</a> by solving the convex <a href="#problem-2">Problem 2</a>.</p>
+<div class="lemma">
+<p><span id="lem:unlabeled-div-1" class="lemma"><strong>Lemma 1  </strong></span>Consider a solution of <a href="#problem-2">Problem 2</a> given by []</p>
+</div>
+</div>
+</div>

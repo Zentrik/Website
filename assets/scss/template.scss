@@ -1,0 +1,55 @@
+// Starter Blog Template
+// https://wowchemy.com/templates/
+
+.home-section {
+  padding: 3em 0 3em 0;
+}
+
+.home-section.wg-starter-blog-intro {
+  align-items: center;
+  justify-content: center;
+}
+
+.home-section.wg-starter-blog-intro .content {
+  text-align: center;
+}
+
+.home-section > .content {
+  width: 45em;
+  max-width: calc(100% - 4em);
+  margin: 0 auto;
+}
+
+.home-section > .content > :last-child {
+  margin-bottom: 0;
+}
+
+.home-section header {
+  margin-bottom: 1em;
+}
+
+.home-section .wg-starter-blog-intro h2 {
+  font-size: 2.25em;
+  line-height: 1.25em;
+  letter-spacing: -0.05em;
+}
+
+// Narrower container for Hello World sections (primarily Blank widget content).
+@media (min-width: 1200px) {
+  .home-section .container {
+    max-width: 880px;
+  }
+}
+@media (min-width: 992px){
+  .home-section .container {
+    max-width: 880px;
+  }
+}
+
+// Prevent stretching on About page with narrow container
+.avatar {
+  width: auto;
+  height: auto;
+  max-width: 200px;
+  max-height: 200px;
+}
