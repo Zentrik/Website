@@ -7,7 +7,7 @@ date: '2021-06-11T18:13:10.351Z'
 categories: []
 author: admin
 lastMod: '2021-06-11T18:13:10.351Z'
-featured: yes
+featured: no
 draft: no
 image:
   caption: ''
@@ -22,6 +22,23 @@ output:
 # Summary
 
 The paper tries to solve the problem of 'guiding a lander spacecraft to a given target on the planet's surface with an accuracy of a fewer than several hundred meters' by 'finding the fuel optimal trajectory that takes a lander with a given initial state (position and velocity) to a prescribed final state'. The lander is modelled 'as a point mass with a single thruster' 'in a uniform gravity field', with decreasing mass and thrusters that can be gimballed and throttled subject to constraints. As 'mars pinpoint landing requires real-time onboard computation of the optimal trajectory' the optimisation problem needs to be convex however, the thrust magnitude constraint is a nonconvex constraint. To convexify this problem 'a slack variable is introduced to relax the nonconvex constraint' and 'it is shown that any optimal solution for the resulting relaxed problem is also optimal for the original problem'. 'Then we approximate the relaxed optimal control problem as a finite-dimensional parameter optimization problem via representing the control input by a finite set of basis functions, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP. Additionally, we consider thruster pointing constraints and extend our convex solution approach to handle this constraint via a heuristic. Finally, we present some simulation results for an example spacecraft'.
+
+# Notation
+$x \in [a, b]$ --- $x$ is in the range $a$ to $b$ inclusive, $a \leq x \leq b$
+
+$\left \lVert x \right \rVert$ --- The length of vector $x$
+
+$T_c(t)$ --- Thrust force acting on rocket at time t
+
+$m(t)$ --- Mass of rocket at time t
+
+$r(t)$ --- Position vector of spacecraft at time t relative to surface
+
+$\dot{r}(t)$ --- Velocity vector of spacecraft at time t relative to surface
+
+$\ddot{r}(t)$ --- Acceleration vector spacecraft at time t relative to surface
+
+$\forall$ --- for all
 
 # Problem Formulation
 
@@ -42,12 +59,15 @@ The only two forces acting on the rocket are weight and the net thrust force. Ad
 
 The initial conditions are $m(0) = m_{wet}$, $r(0) = r_0$, $\dot{r}(0) = \dot{r}_0$.
 
-The magnitude of the net thrust vector is constrained by $0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \text{ for all } t \in [0, t_f]$. The final position and velocity are set to 0, $r(t_{f}) =\dot{r}(t_{f}) = 0$. Additionally the lander starts off above the surface and never goes below it, $r_{1}(0) > 0$, $r_{1}(t) \geq 0 \ \ \text{for all} \ t \in [0, t_{f}]$. Any additional constraints are assumed to have the general form of $||S_j x(t) - v_j|| + c^T_j x(t) + a_j \leq 0$. The paper imposes a bound on the velocity $|| \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f]$ and a "glide slope" constraint $\displaystyle \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}$
+The magnitude of the net thrust vector is constrained by $0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \forall t \in [0, t_f]$. The final position and velocity are set to 0, $r(t_{f}) =\dot{r}(t_{f}) = 0$. Additionally the lander starts off above the surface and never goes below it, $r_{1}(0) > 0$, $r_{1}(t) \geq 0 \ \ \text{for all} \ t \in [0, t_{f}]$. 
+Any additional constraints are assumed to have the general form of $||S_j x(t) - v_j|| + c^T_j x(t) + a_j \leq 0,\ j = 1, \ldots, n_s$ for all $t \in [0, t_f]$ where $x = [r, \dot{r}]^T$. The paper imposes two inequalities in this form: a bound on the velocity $|| \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f]$ and a "glide slope" constraint $\displaystyle \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}$.
 
 ### Problem 1
 
+Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is descirbed as follows:
+
 $$\begin{align*}
-  \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} ||T_c(t)|| dt \\
+  \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} dt \\
   \text{subject to } \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} \dot{m}(t) = - \alpha ||T_c(t)|| \\
   0 < \rho_{1} &\leq ||T_c(t)|| \leq \rho_{2}, \hspace{0.6cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &+ c^T_j x(t) + a_j \leq 0, \hspace{0.5cm} j = 1, \ldots, n_s \\
@@ -55,13 +75,15 @@ $$\begin{align*}
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0
 \end{align*}$$
 
-$0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \text{ for all } t \in [0, t_f]$ is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
+$0 < \rho_{1} \leq \left \lVert T_c(t) \right \rVert \leq \rho_{2} \forall t \in [0, t_f]$ is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
 
 # Convexification of the Control Magnitude Constraint
 
-In this section the paper formulates a modified version of [Problem 1] and shows that an optimal solution of the modified problem is optimal for [Problem 1] and that it exists
+In this section the paper formulates a modified version of [Problem 1] and shows that an optimal solution of the modified problem is optimal for [Problem 1] and that it exists.
 
 ### Problem 2
+
+The modified version of [Problem 1] is as follows:
 
 $$\begin{align*}
   \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) \\
@@ -73,8 +95,30 @@ $$\begin{align*}
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}$$
 
-We will now prove that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
+[Problem 2] has introduced a slack variable $\Gamma$ which replaces $\left \lVert T_c(t) \right \rVert $ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$.
+A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $T_c(t) = \Gamma(t)$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
 
 ::: {.lemma}
-Consider a solution of [Problem 2] given by []
+Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2 \text{ for } t \in [0, t_f^*]$.
 :::
+
+::: {.proof}
+Let $y = [x^T,\ m]^T$ and $x_1 = r,\ x_2 = \dot{r}$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian for [Problem 2] is $H(x, m, T_c, \Gamma, \lambda_0, \lambda) = \lambda_0 ( \Gamma ) + \lambda^T \dot{y}$ $= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma$ with $\lambda_0 \leq 0$.  Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continouous vector function $\lambda$ such that
+
+1. $[\lambda_0,\ \lambda^T]^T \neq 0$ for all $t \in [0,\ t^*_f]$
+$$\begin{align*}
+  \dot{\lambda} = \frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right)
+\end{align*}$$ 
+
+2. $$\begin{align*}
+  H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.5cm} \forall v \in \Psi \hspace{0.5cm} \forall t \in [0, t^*_f]
+\end{align*}$$ 
+
+3. The transversality condition: $\left[ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T \right]^T$ must be orthorgonal to $\left[ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T \right]$ 
+:::
+
+We can see $\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) = -\begin{bmatrix}
+0 \\
+\lambda_1 \\
+\lambda_2^T T^*_c * -\frac{1}{m^2}
+\end{bmatrix}$

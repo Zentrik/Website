@@ -1,0 +1,225 @@
+---
+title: Pontryagin's minimum principle
+summary: A brief summary of the proof of pontryagin's minimum principle and explanation of $\lambda_0$
+author:
+- admin
+tags: []
+categories: []
+date: "2021-06-27T17:00:45.785Z" #"2021-06-27T17:00:45.785Z"
+lastMod: "2021-06-27T17:00:45.785Z"
+featured: false
+draft: true
+
+# Featured image
+# To use, add an image named `featured.jpg/png` to your page's folder. 
+image:
+  caption: ""
+  focal_point: ""
+
+# Projects (optional).
+#   Associate this post with one or more of your projects.
+#   Simply enter your project's folder or file name without extension.
+#   E.g. `projects = ["internal-project"]` references 
+#   `content/project/deep-learning/index.md`.
+#   Otherwise, set `projects = []`.
+projects: []
+
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+Lagrange problem, minimising $\int_{t_0}^{t_1} g(x, u, t) \,dt$
+
+Bolza problem, minising $h(x(t_1)) + \int_{t_0}^{t_1} g(x, u, t) \,dt$
+
+Mayer problem, minising $h(x(t_1))$
+
+Let $y(t)$ be the state vector and $u(t)$ the control input
+$$\begin{align*}
+  \min_{u(t)} \tilde{h}(y(T)) + \int_{0}^{T} \tilde{g}(y(t), u(t)) \,dt \\
+  s.t. \ \dot{y} = \tilde{f}(y(t), u(t)), \ y(0) = y^0
+\end{align*}$$ 
+
+If we let $\dot{y}_0 = \tilde{g}(x(t), u(t))$ and $y_0 = 0$ then we can construct the optimisation problem as:
+$$\begin{align*}
+  &x = [y_0, y^T]^T,\ h(x) = \tilde{h}(y) + y_0,\\
+  &f(x(t), u(t)) = [\tilde{g}(y(t), u(t)),\ \tilde{f}(y(t), u(t))^T]^T \\
+  &\min_{u(t)} h(x(T)) \\
+  s.t. \ &\dot{x} = f(x(t), u(t)), \ x(0) = [0, y^0],\\
+\end{align*}$$ 
+Then $H(x, u, \lambda) = \lambda^T f(x, u)$, $\dot{\lambda}(t) = - \nabla_x H(x^*(t), u^*(t), \lambda(t))$. Therefore $\dot{\lambda}_0 = 0$ as $y_0$ is not in f(x(t), u(t)). $\lambda(T) = \nabla h(x(T))$ and so if $\lambda_{1 \dots n} = 0$, WLOG $\lambda_0 = 1$ as $\lambda \neq 0$. $\lambda_0 = 1, \lambda_{1 \dots n} = 0$ if $x(T)$ is not fixed and $T$ is.
+
+$\lambda_0$ = 0 is an abnormal problem, implying the system is not controllable/ the normality condition is not satified/ fixed time, but non fixed final state will never be abnormal? For linear control systems All  trajectories  for  uncontrollable  systems  are  possibly  abnormal  extremals \dots
+if $\lambda_0 \neq 0$ then we can simply divide by $\lambda_0$ and the resulting hamiltonian will be our standard form.\
+
+# Proof Summary
+
+I will be using $\cdot$ instead of $\langle \rangle$
+
+Free interval optimal control problem: $x(t_0) \in S_{0}$ and $x(t_1) \in S_{1}$
+Fixed interval:
+
+The state at time t is given by $\xi\left( \mu, x_0, t_0, t \right)$
+
+(4.2) We vary the initial state $x_0$, by setting it to $\gamma(s)$. We let state with the variation be $\sigma(s, t) = \xi\left( \mu, \gamma(s), t_0, t \right)$ and $v(t) = \sigma'(0, t)$. Notice $\gamma(s) = \sigma(s, t_0)$ and $\gamma'(0) = v(t_0)$
+
+(4.3)
+$$\begin{align*}
+  v(t) &= \boldsymbol{D}_2 \xi\left( \mu, \gamma(0), t_0, t \right) \cdot \gamma'(0) \\
+  &= \boldsymbol{D}_2 \xi\left( \mu, \gamma(0), t_0, t \right) \cdot v(t_0) \\
+  \dot{v}(t) &= \boldsymbol{D}_4 \boldsymbol{D}_2 \xi\left( \mu, \gamma(0), t_0, t \right) \cdot v(t) \\
+  &= \boldsymbol{D}_1 f \left( \xi\left( \mu, \gamma(0), t_0, t \right), \mu(t) \right) \cdot v(t)
+\end{align*}$$ 
+
+(4.5) $\lambda(t) \cdot v(t) = \lambda(t_0) \cdot v(t_0)$
+
+(4.6) let $P(t)$ be a hyperplane in state space which is perpindicular to $\lambda(t)$ and $v(t)$ is an element of $P(t)$. The adjoint equation describes the evolution of a hyperplane along the trajectory $\xi\left( \mu, x_0, t_0, t \right)$. $\lambda(0) \neq 0$?.
+
+`As we shall see, the proof of the Maximum Principle involves approximating the reachable set with convex cones.  In order to generate these approximations we will use specificvariations of controls, called needle variations, that are conjured to exactly give the sort of approximation we need.  There are two sorts of needle variations we will use, depending on whether we are considering the free interval or the fixed interval optimal control problem.`
+
+(4.8) The fixed interval needle variation is when we switch the input $\mu_\theta$ to $w_\theta$ for a short time period $s \times l_\theta$ ending at $\tau_\theta$ giving $\mu_\theta\left( s, t \right)$. seen below.
+The state at time $\tau_\theta$ following a needle variation is $\xi\left( \mu_\theta\left( s, \cdot \right), x_0, t_0, \tau_\theta \right)$. The fixed interval needle variation $v_\theta$ is $\left. \frac{d}{d s} \right|_{s=0} \xi\left( \mu_\theta\left( s, \cdot \right), x_0, t_0, \tau_\theta \right)$, the derivative of the new state with respect to s when the needle variation has no effect.
+
+In (4.9) I think $v_\theta$ is supposed to equal $l_\theta f \left( \xi\left( \mu, x_0, t_0, \tau_\theta \right), \omega_\theta \right) - l_\theta f \left( \xi\left( \mu, x_0, t_0, \tau_\theta \right), \mu \left( \tau_\theta \right) \right)$
+
+(4.10) The set of $v_\theta$ forms a cone when we let $l_\theta$ vary.
+
+`Now we extend the analysis from the preceding section to allow for the effects of multiple needle variations. The reason for this is simple. The set of fixed interval needle variations at a given Lebesgue point form a cone by Corollary 4.10. However, these will not generally form a convex set, for example, because the control setUneed not be convex (see Exercise E4.2).To generate a convex set of variations from needle variations we allow the times of the needle variations to vary.`
+
+(4.11) Fixed interval multi-needle variations are the same as before except we have multiple variations and $v_\Theta(t)$ is $\left. \frac{d}{d s} \right|_{s=0} \xi\left( \mu_\Theta\left( s, t \right), x_0, t_0, t \right)$, the derivative of the new state with respect to s when the needle variation is not in effect at time t. 
+
+(4.13) The set of $v_\Theta(t)$ forms a convex cone when we let $l_{\theta, k}$ vary. (clarify what $l_{\theta, k}$ is)
+
+`Having now discussed a little bit about needle variations,  we  should  really  ask  ourselves  why  these  are  useful  to  look  at. Variations in general provide us with a way to look at trajectories “nearby” a given trajectory. Needle variations do this in a very specific way.  What a needle variation does is isolate the effects of changing the control from its nominal value to a different value around a single instant. The notion of a multi-needle variation encodes the effects of doing this at various differenttimes. Thus the way to think of the set of multi-needle variations is this: It represents the effects at a given time $t$ of instantaneously altering the value of the control around almost all times (specifically at Lebesgue points) preceding it.`
+
+`In this chapter we carry out one of the important steps in understanding the Maximum Principle: the elucidation of the relationship between convex cones of multi-needle variationswith the boundary of the reachable set.`
+
+(5.1) The reachable set is the set of states at $t_1$ that are reached from $x_0$ at $t_0$ if the input can be any element in the input set.
+
+(5.2) We calculate the evolution of $v_\theta$ along the trajectory $\xi\left( \mu, x_0, t_0, t \right)$ giving $x = \left. \frac{d}{d s} \right|_{s=0} \xi\left( \mu_\theta\left( s, \cdot \right), x_0, t_0, t \right)$. This gives us the derivative of the state at time $t$ when the needle variation at time $\tau_\theta$ is introduced. The combination of all $x$ where $\tau_\theta$ and $l_\theta$ take on all feasible values. 'The idea of the fixed interval tangent cone is that it should be a set of “directions” fromwhich trajectories of the system emanate.' 
+
+(5.3) Describes the coned convex hull of $v_\Theta$. Each $\Theta$ has $k_a$ $\theta$ in it, each with a different $\tau, l$ and $\omega$. This gives a fixed interval tangent r-simplex cone.
+
+(5.4) All directions in the fixed interval tangent cone that are contained in the fixed interval tangent r-simplex cone are generated by a fixed interval multi-needle variation. 
+`The point is that all directions in K(μ,x0,t0,t) that are contained in fixed interval tangent simplex cones are generated by a fixed interval multi-needle variation. The non obvious thing is that all interior points in K(μ,x0,t0,t) have this property. The following result records this, along with another useful characterisation of the fixed interval tangent cone.`
+
+(5.5) 'The fixed interval tangent cone is equal to the 
+Note that any fixed interval tangent simplex cone at timetis, by definition,contained in the fixed interval tangent cone. Thus the closure of the set of all fixed interval tangent simplex cones at time $t$ is contained in the fixed interval tangent cone. since the latter is closed.'
+
+(5.10) Points interior to fixed interval tangent cones are in the reachable set. Why? because we can let s = 1 and just scale l appropriately as sl is what matters for the needle variation. and so by 4.9 this is in reachable set? \dots
+
+(5.12) We have $p \cdot f(x,u) \leq p \cdot f(x, u^*)$ and let $F_\sigma(x) = f(x, u)$. The set $F_\sigma(x)$ lies on one side of the hyperplane $p \cdot f(x,u) \leq p \cdot f(x, u^*)$. Also the hamiltonian has the point $p \cdot f(x, u^*)$ on it so support hyperplane. We are considering $\mathbb{R}^n$, the output space of $f(x, u)$, so $F_\sigma(x)$ $f(x, u^*)$ lies in the set and has to be on boundary as it is the max of $p \cdot f(x, u)$ over u. ?
+
+(5.13) 
+We let $l_\theta = 1 \ \therefore \ v_\theta = f\left( \xi, \omega \right) - f\left( \xi, \mu(t) \right)$ by (4.9). $v_\theta$ is in the fixed interval tangent cone and the evolution till time $\tau$ is in $K(\mu, x_0, t_0, \tau)$. 
+
+So by (4.7) we can evovle the $\lambda$ instead giving hamiltonian pointwise maximum.
+
+We have $\lambda(t) \cdot v_\theta \leq 0$, therefore $\left. \frac{d}{d s} \right|_{s=0}H$ is -ve?.  
+
+The existence of a support hyperplane or the free interval tangent cone almost everywhere, says that applying needle variations the trajectories can only move in "one way".' Lemmata  5.12and 5.13 say that this implies that the control must also have an “extremal” property atalmost all instants precedingτ.  (The preceding discussion really only has poignancy whenthe free interval tangent cone has a nonempty interior.)'
+
+We have $\lambda(t) \cdot v_\theta \leq 0$ and $v_\theta = 0$, so we have a supporting hyperplane with the fixed interval tangent cone. This implies the maximisation of the Hamiltonian?? 
+
+In 5.13 We assume that $\lambda(\tau) \cdot v \hspace{0.5cm} \forall \ v \in K_\tau$ where $K(\mu, x_0, t_0, t) \subset K_t \subset \mathbb{R}^n$ for each $t \in [t_0, t_1]$ and that $\lambda$ is the adjoint response with $\lambda(\tau)$ at time $\tau$. This implies that $\mu(t)$ maximises the hamiltonian.
+
+$K_t$ is a convex cone so it includes the origin. So $\lambda(\tau) \cdot v = 0$ is a supporting hyperplane to $K_\tau$.
+
+(5.14) If $span \left( f(\xi(\mu, x_0, t_0, \tau), \mu(\tau)) \right) \subset K_\tau$ where $K_\tau \subset \mathbb{R}^n$ is a convex cone and $\lambda(t) \cdot v \leq 0 \ \forall v \in K_\tau$ then Hamiltonian is 0 for all inputs?
+
+(5.15) If control is bounded then Hamiltonian is a constant wrt time.
+
+(5.16) If $ξ(μ^∗,x_0,t_0,t_1) ∈ bd(\mathcal{R}(x_0,t_0,t_1))$ then there is a hyperplane $P(t_1)$ seperating $v_0$ and $K(\mu, x_0, t_0, t_1)$. If we let $\lambda_*(t_1)$ be orthogonal to $P(t_1)$ and contained in a half-space not containing $K(\mu, x_0, t_0, t_1)$ and let it be the adjoint response taking $\lambda_*(t_1)$ at time $t_1$ then lemmata 5.13 and 5.15 follows. So pointwise maximum is satisfied. 
+
+(5.17) Trajectories  in  the  interior  of  the  fixed  time  reachable  setremain in the interior
+
+(6.2) $\xi_*^0(t_1)$ has to be the minimum value it can be for $\xi_*(t_1)$ in the reachable set, otherwise it couldn't be the optimal solution as it doesn't minimise the cost. Therefore, $\hat{\xi}$ has to lie on the boundary of the reachable set of the extended set.
+
+(6.3) $(-1, 0)$ cannot lie in the interior of $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$, as it is a cone so if $(-1, 0)$ lies in the cone that would imply that the reachable set includes points with a lower $\xi^0(t_1)$ value and $\xi(t_1)$ which contradicts (6.2). Therefore, there exists a hyperplane $\hat{P}(t_1)$ such that $(-1, 0)$ is contained in one of the closed half-spaces defined by $\hat{P}(t_1)$ and $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$ is contained in the other closed half-space. We take $\hat{\lambda}_*(t_1)$ to be a vector orthorgonal to $\hat{P}(t_1)$ and contained in the the half-space containing $(-1, 0)$. Then $\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0$ as both are in the same halfspace and $\hat{\lambda}_*(t_1) \cdot \hat{v} \leq 0, \hspace{0.5cm} \hat{v} \in \hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$. $\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0 \implies \hat{\lambda}_*(t_1) \leq 0$. We then define $\hat{\lambda}_*$ to be the adjoint response equal to $\hat{\lambda}_*(t_1)$ at time $t_1$. From  the  equations  for  the  adjoint  response  we  immediately  have $\dot{\lambda}_*^0(t) = 0$ (since $\hat{f}$ is independent of $x^0$) and so $\lambda_*^0$ is constant and nonpositive. If $\lambda_*^0 \neq 0$ then we can define $\lambda_*^0(t_1) = -1$ (as the $\lambda$ can be scaled whilst still being orthogonal and in the same closed half-space) and so $\lambda_*^0 = -1$. Alternatively divide $\Lambda$ by $\lambda^0$ and the differential equation will still be satisfied.
+
+The theorem then follows from lemmata 5.13 and 5.15.
+
+WHY $\lambda_0 \neq 0$ for every $t \in [t_0, t_1]$ IDK. $\lambda \neq 0$ as it is orthogonal to hyperlane, $\therefore$ cannot be $\boldsymbol 0$
+
+
+
+(6.4) If control is bounded then Hamiltonian is a constant wrt time.
+
+
+
+
+() We approximate the reachable set with convex cones. The reachable set is the states we can get to from $x_0$ at $t_0$ at $t_1$ by setting the input. The needle variations form a convex cone, which is a subset of the reachable set. 'The idea of the fixed interval tangent cone is that it should be a set of “directions” from which trajectories of the system emanate.'
+
+### Transversality conditions
+
+Before we stated that we should not be able to stay at the same state and decrease cost. Here we will be using the fact that we cannot stay in the stay in the state set $S_0$ and $S_1$ whilst decreasing cost.
+
+(6.5) Fig 6.2, 6.3 are quite helpful here. $U$ is a ball, where in the last dimension it is non negative (i.e. the ball has been cut in half). More precisely $U$ contains the semi ball? $\phi$ is a continuous mapping of $U$ which has a continuous inverse. $D \phi(y)$ has one unique output for each $y \in U$ (as $U \subset U'$, I have replaced the references to $U'$ in this line. is this valid?). $\epsilon = \phi(U)$ and the boundary of $\epsilon$ is just $\phi(y)$ where $y$ are points on the flat part of the semi ball, $U$ (points where the last dimension is 0).
+
+(6.6) We denote $T_x S_0 = \ker(\nabla \Phi_0(x))$ the tangent space to $S_0$ at a point $x \in S_0$. Now if we have a starting state $x_0 \in S_0$, the extended state (including cost) is $(0, x_0)$. Let the state at time t starting at the extended state, with control $\mu(t)$ be $\xi(\mu, (0, x_0), t_0, t)$ which we will denote as $\xi(t)$ for brevity. We have a needle variation with $\tau \in (t_0, t_1)$. We denote $\mathscr{K}(\mu, x_0, t_0, t) = \text{cl}(\text{conv cone} (\Phi(\boldsymbol \mu, x_0, t_0, t_0, t)((\boldsymbol T_{\xi(t_0)} S_0) \cup K(\mu, x_0, t_0, t)))$. $(\boldsymbol \Phi(\mu, x_0, t_0, t_0, t)((\boldsymbol T_{\xi(t_0)} S_0)$, recall that $\Phi$ is a map from of a state between two times in this case from $t_0$ to $t$?, so this is the tangent space at time $t$ as the system has evolved according to the state dynamics $f$? 
+The union gives us 
+
+(6.7) Let $\varepsilon$ be an edged set with $\xi(\mu, x_0, t_0, \tau)$ on its boundary. If the tangent half-space of $\varepsilon$ at $\xi(\mu, x_0, t_0, \tau)$ and the cone $\mathscr{K}(\mu, x_0, t_0, \tau)$ are not seperable, then there exists $x'_0 \in S_0$ such that there is an element of $\mathcal{R}(x'_0, t_0, t_1)$ in the interior of $\varepsilon$.
+
+I also use Geometric Approach to Pontryagin’s Maximum Principle to explain the transversality conditions as it is clearer in places.
+Imagine we have a needle variation as before but now we also vary the initial state, the smallest closed convex cone containing these variations is $\mathscr{K}$. Now if we define a . Here we define a manifold $M_f$ that is equivalent to $\hat{S}_1$
+
+We define an edged set $\hat{S}_1$ which is the set of all states which lie in $S_1$ and whose cost, $x_0$, is less than or equal to the optimal final cost. We also define an edged set $\hat{S_\tau}$ which is the set of states at time $\tau$ which follow the state dynamics under the optimal control trajectory and which lie in $\hat{S}_1$ at $t_1$. The tangent halfspace to $\hat{S}_1$ at $\hat{\xi}_*(t_1)$ is the convex cone of the union between $(-1, 0)$ and $\hat{T}_{\hat{\xi}_*(t_1)} \hat{S}_1$. ...
+
+(6.9) The cones $\hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, t_1)$ and $\hat{T}_{\hat{\xi}_*(t_1)} \hat{S}_1$ are seperable. Assume that they are not, as $\hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, t_1) = \cup_{t \in (t_0, t_1)} \hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, t)$ (explain why) then there exists a $\tau$ such that $\hat{\Phi}(\mu_*, \hat{x_0}, t_0, \tau, t_1)(\hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, \tau))$ and $T^+_{\hat{\xi}_* (t_1)} \hat{S}_1$ are not seperable (WHY). The latter cone is simply $T^+_{\hat{\xi}_* (\tau)} S_\tau$, so using lemma 6.7 we conclude there is a control ...(essentially copy paste) so not optimal.
+
+By lemma 6.9 we know that the cones $\hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, \tau)$ and $T^+_{\hat{\xi}_* (t_1)} \hat{S}_1$ are seperable. So there exists a $\hat{\sigma}$ such that $\hat{\sigma} \cdot \hat{v} \leq 0$ for all $\hat{v} \in \hat{\mathscr{K}}(\mu_*, \hat{x_0}, t_0, t_1)$ and $\hat{\sigma} \cdot \hat{v} \geq 0$ for all $\hat{v} \in T^+_{\hat{\xi}_* (t_1)} \hat{S}_1$. 
+
+As $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1) \subset \hat{\mathscr{K}}(\mu_*, \hat{x}_0, t_0, t_1)$ and $(-1, 0) \in T^+_{\hat{\xi}_* (t_1)} \hat{S}_1$, then $\sigma$ satisfies the condtion of the adjoint ... So we can let $\lambda_*(t_1) = \sigma$?
+As $\hat{T}_{\hat{\xi}(t_1)} S_1 \subset T^+_{\hat{\xi}_*(t_1)} \hat{S}_1$ and $\hat{T}_{\hat{\xi}(t_1)} S_1 = \{(0, v) | v \in T_x S_1 \}$. So $\sigma(t_1) \cdot v \geq 0$ for all $v \in T_{\xi_*(t_1)} S_1$. As $T_{\xi_*(t_1)} S_1$ is a subspace, for any $v \in T_{\xi_*(t_1)} S_1$ there is a $-v \in T_{\xi_*(t_1)} S_1$. So $\sigma(t_1) \cdot v \geq 0$ and $\sigma(t_1) \cdot -v \geq 0$, therefore $\sigma(t_1) \cdot v = 0$ for all $v \in T_{\xi_*(t_1)} S_1$. As $\sigma \neq 0$ then $\sigma$ is orthogonal to $T_{\xi_*(t_1)} S_1$, so $\lambda_*(t_1)$ is orthogonal to $T_{\xi_*(t_1)} S_1$.
+
+
+
+(7.3) 
+(7.4)
+
+(4.9) ξ(μΘ(s,·),x0,t0,τ_\theta) =ξ(μ,x0,t0,τ1) +sv_θ + o(s)
+(4.12) ξ(μΘ(s,·),x0,t0,t) =ξ(μ,x0,t0,t) +sΦ(μ,x0,t0,τ1,t)·vθ1+...+sΦ(μ,x0,t0,τk,t)·v_θk + o(s) 
+
+# Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin
+
+The sequel to citation 23 in the paper
+
+I will be using the same notation as used in the previous section. $e(\phi) = (t_0, \xi(0), t_1, \xi(t_1))$, the set $\mathcal{B}$ of points $e(\phi)$ in $\mathbb{R}^{2n + 2}$. $\mathcal{B} = \{ (t_0, \xi_0, t_1, \xi_1) : (t_0, \xi_0) \in \mathcal{T}_0, \ (t_1, \xi_1) \in \mathcal{T}_1 \}$. \mathcal{T} is similar to S in previous section but also includes constraint on the time.
+
+If $(t_0, x_0)$ are fixed and we have a n-dimensional manifold $\mathcal{T}_1$. And if the trajectory $\xi$ is not tangent to $\mathcal{T}_1$ at $(t_1, \xi(t_1))$ then $\lambda^0 \neq 0$
+
+6.3.30
+a) If $\lambda \neq 0$ let $\boldsymbol \lambda^0 = -1$, $\boldsymbol \lambda = \frac{\lambda}{|\lambda^0|}$ and so $\boldsymbol H = \frac{H}{|\lambda^0|} = \hat{\boldsymbol \lambda} \cdot f$. $\dot{\boldsymbol \lambda} = - \frac{1}{|\lambda^0|} \nabla_\xi H = - \nabla_\xi \boldsymbol H$
+
+b) Let $\mathcal{T}_0$ be a point and $\mathcal{T}_1$ be a n-dimensional manifold of class C^(1) (the set of all differentiable functions with a continouous first derivative). If an extremal trajectory is not tangent to $\mathcal{T}_1$ then $\lambda^0 \neq 0$. WHY? 
+
+
+We are minisiming $$\begin{align*}
+  \gamma(e(\phi)) + \int_{t_0}^{t_1} A \dot{x} \cdot \dot{x} + B \dot{x} \cdot a(t, x) + b(t, x) \,dt
+\end{align*}$$ 
+Assume initial and terminal times are fixed. Let $t_0 = 0$ and $t_1 = 1$ for typographic simplicity. The set $\mathcal{B}$ consists of points $(0, x_0, 1, x_1)$.
+
+(7.4.8) Let \bar{\phi} minimise the cost function over the set of functions that start $\epsilon$ close to the initial state and whose state derivative stay $\epsilon$ close throughout the trajectory?. eq (7.4.7). Assumption (7.4.1) v) gives that the endpoint $e(\phi) \in \mathcal{B}$ and is absolutely continouous and has derivative for all time?
+
+
+
+Perhaps, final cone has to be contained in $S_1$?. So if we can construct seperating hyperplane to $S_1$ and $(0, -1)$ we have done it for cone. So if we let $S_1$ be contained in the plane/ parallel to it, then $\lambda(t_1)$ can be perpindicular to $S_1$. To get to $\mathcal{T}$ add a new state which represents time and then $\mathcal{T}$ can be represented as a state constraint.
+
+We can get the transversality conditions from 7.11, convert the variable time problem to a fixed time problem and include time in the state.
+
+
+
+'Apart from the transversality conditions, the main difference between FPMP and PMP is thefact that the domain of the curves in the optimal control problems is unknown.  That introducesa new necessary condition:  the supremum of the Hamiltonian must be zero, not just constant.' Geometric_Approach_to_Pontryagins_Maximum_Princip.pdf
+Nice article: https://www.janheiland.de/post/pontr-pendl/#the-maximum-principle
+https://encyclopediaofmath.org/wiki/Bolza_problem
+
+https://math.stackexchange.com/questions/3898940/tangent-vectors-as-directional-derivatives-on-manifolds
+https://tutorial.math.lamar.edu/Classes/CalcIII/TangentNormalVectors.aspx
+
+We have a parametric curve, $r(t)$. The tangent is $\left. \frac{d}{d t} \right|_{t=a}r(t)$ at a.
+If we have a function $f(x)$ we can let $r(t) = f(a + t v)$ (v is the direction we are making our nudge in). Then the tangent is $\left. \frac{d}{d t} \right|_{t=a}r(t) = D_v f(a)$ at a. 
+https://www.youtube.com/watch?v=cHNT7_F8m1Y&list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&index=75
+
+WHY ARE NEEDLE VARIATIONS USED AND NOT SOMETHING ELSE.

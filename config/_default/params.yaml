@@ -90,7 +90,7 @@ marketing:
   google_tag_manager: ''
   google_site_verification: ''
 cms:
-  branch: main
+  branch: master
   local_backend: false
 icon:
   pack:
