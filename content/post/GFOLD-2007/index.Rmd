@@ -6,9 +6,9 @@ summary: An explanation of a paper on solving the guidance problem for pinpoint 
 date: '2021-06-11T18:13:10.351Z'
 categories: []
 author: admin
-lastMod: '2021-06-11T18:13:10.351Z'
+lastMod: '2021-07-21T18:24:20.109Z' 
 featured: no
-draft: no
+draft: true
 image:
   caption: ''
   focal_point: ''
@@ -17,16 +17,17 @@ tags: []
 output:
   blogdown::html_page:
     toc: true
+bibliography: ref.bib
 ---
 
 # Summary
 
-The paper tries to solve the problem of 'guiding a lander spacecraft to a given target on the planet's surface with an accuracy of a fewer than several hundred meters' by 'finding the fuel optimal trajectory that takes a lander with a given initial state (position and velocity) to a prescribed final state'. The lander is modelled 'as a point mass with a single thruster' 'in a uniform gravity field', with decreasing mass and thrusters that can be gimballed and throttled subject to constraints. As 'mars pinpoint landing requires real-time onboard computation of the optimal trajectory' the optimisation problem needs to be convex however, the thrust magnitude constraint is a nonconvex constraint. To convexify this problem 'a slack variable is introduced to relax the nonconvex constraint' and 'it is shown that any optimal solution for the resulting relaxed problem is also optimal for the original problem'. 'Then we approximate the relaxed optimal control problem as a finite-dimensional parameter optimization problem via representing the control input by a finite set of basis functions, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP. Additionally, we consider thruster pointing constraints and extend our convex solution approach to handle this constraint via a heuristic. Finally, we present some simulation results for an example spacecraft'.
+The paper, @aci2007, tries to solve the problem of 'guiding a lander spacecraft to a given target on the planet's surface with an accuracy of a fewer than several hundred meters' by 'finding the fuel optimal trajectory that takes a lander with a given initial state (position and velocity) to a prescribed final state'. The lander is modelled 'as a point mass with a single thruster' 'in a uniform gravity field', with decreasing mass and thrusters that can be gimballed and throttled subject to constraints. As 'mars pinpoint landing requires real-time onboard computation of the optimal trajectory' the optimisation problem needs to be convex however, the thrust magnitude constraint is a nonconvex constraint. To convexify this problem 'a slack variable is introduced to relax the nonconvex constraint' and 'it is shown that any optimal solution for the resulting relaxed problem is also optimal for the original problem'. 'Then we approximate the relaxed optimal control problem as a finite-dimensional parameter optimization problem via representing the control input by a finite set of basis functions, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP. Additionally, we consider thruster pointing constraints and extend our convex solution approach to handle this constraint via a heuristic. Finally, we present some simulation results for an example spacecraft'.
 
 # Notation
-$x \in [a, b]$ --- $x$ is in the range $a$ to $b$ inclusive, $a \leq x \leq b$
+$y \in [a, b]$ --- $y$ is in the range $a$ to $b$ inclusive, $a \leq x \leq b$
 
-$\left \lVert x \right \rVert$ --- The length of vector $x$
+$\left \lVert y \right \rVert$ --- The length of vector $y$
 
 $T_c(t)$ --- Thrust force acting on rocket at time t
 
@@ -34,11 +35,23 @@ $m(t)$ --- Mass of rocket at time t
 
 $r(t)$ --- Position vector of spacecraft at time t relative to surface
 
+$r_{0_1}$ --- is the component of $r_0$ along the direction opposite to the direction of gravity, i.e. $r_{0_1} = -\frac{g}{||g||} r_0$.
+
+$r_1(t)$ --- is the component of $r(t)$ along the direction opposite to the direction of gravity, i.e. $r_1 = -\frac{g}{||g||} r(t)$.
+
 $\dot{r}(t)$ --- Velocity vector of spacecraft at time t relative to surface
+
+$\dot{r}_{0_1}$ --- is the component of $\dot{r}_0$ along the direction opposite to the direction of gravity, i.e. $\dot{r}_{0_1} = -\frac{g}{||g||} \dot{r}_0$.
 
 $\ddot{r}(t)$ --- Acceleration vector spacecraft at time t relative to surface
 
-$\forall$ --- for all
+$\; \forall \;$ --- for all
+
+a.e. --- almost everywhere, for all elements in a set except for any elements also in another set of measure 0. Any finite set is measure 0...
+
+$e_i$ --- a vector with $0$s everywhere except for the $i$th position where it is $1$.
+
+identically zero --- when $f(x) = 0$ for all $x$ in the domain of $f(x)$.
 
 # Problem Formulation
 
@@ -50,32 +63,73 @@ The paper assumes that:
   
 The dynamics of the lander are expressed by:
 
-$$\begin{align*}
-  \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)} \\
-  \dot{m}(t) &= - \alpha ||T_c(t)||
-\end{align*}$$
+\begin{align}
+  \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)} (\#eq:1) \\
+  \dot{m}(t) &= - \alpha ||T_c(t)|| (\#eq:2)
+\end{align}
 
 The only two forces acting on the rocket are weight and the net thrust force. Additionally, the mass decreases proportionally to the magnitude of the thrust vector.
 
-The initial conditions are $m(0) = m_{wet}$, $r(0) = r_0$, $\dot{r}(0) = \dot{r}_0$.
+The magnitude of the net thrust vector is constrained by 
+\begin{align*}
+  0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \; \forall \; t \in [0, t_f] (\#eq:3)
+\end{align*}
 
-The magnitude of the net thrust vector is constrained by $0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \forall t \in [0, t_f]$. The final position and velocity are set to 0, $r(t_{f}) =\dot{r}(t_{f}) = 0$. Additionally the lander starts off above the surface and never goes below it, $r_{1}(0) > 0$, $r_{1}(t) \geq 0 \ \ \text{for all} \ t \in [0, t_{f}]$. 
-Any additional constraints are assumed to have the general form of $||S_j x(t) - v_j|| + c^T_j x(t) + a_j \leq 0,\ j = 1, \ldots, n_s$ for all $t \in [0, t_f]$ where $x = [r, \dot{r}]^T$. The paper imposes two inequalities in this form: a bound on the velocity $|| \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f]$ and a "glide slope" constraint $\displaystyle \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}$.
+The intial and final position and velocity, and the initial mass are specified,
+\begin{align*}
+  m(0) = m_{wet}, \hspace{1cm} r(0) &= r_0, \hspace{1cm} \dot{r}(0) = \dot{r}_0 (\#eq:4) \\
+  r(t_{f}) = \dot{r}(t_{f}) &= 0 (\#eq:5)
+\end{align*}
+where $r_0, \dot{r}_0, m_{wet}$ are given.
+Additionally the lander starts off above the surface and never goes below it, 
+\begin{align*}
+  r_{0_1} &> 0 (\#eq:6)\\ 
+  r_{1}(t) &\geq 0, \ \ \; \forall \; t \in [0, t_{f}] (\#eq:7)
+\end{align*}
+where $r(t) = [r_1(t), r_2(t), r_3(t)]^T$
+Any additional state constraints are assumed to have the general form of 
+\begin{align*}
+  ||S_j x(t) - v_j|| + c^T_j x(t) + a_j \leq 0, \hspace{1cm} j = 1, \ldots, n_s \hspace{.5cm} \forall \; t \in [0, t_f] (\#eq:8)
+\end{align*}
+where
+\begin{align*}
+  x = \begin{bmatrix}
+  r \\
+  \dot{r}
+  \end{bmatrix} (\#eq:9)
+\end{align*}
+The paper imposes three inequalities in this form: constraint \@ref(eq:7); a bound on the velocity 
+\begin{align*}
+  || \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f] (\#eq:10)
+\end{align*}
+and a "glide slope" constraint
+\begin{align*}
+  \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}
+\end{align*} 
+where $\tilde{\theta}_\text{alt}$ is given.
 
 ### Problem 1
 
 Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is descirbed as follows:
 
-$$\begin{align*}
+\begin{align*}
   \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} dt \\
   \text{subject to } \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} \dot{m}(t) = - \alpha ||T_c(t)|| \\
   0 < \rho_{1} &\leq ||T_c(t)|| \leq \rho_{2}, \hspace{0.6cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &+ c^T_j x(t) + a_j \leq 0, \hspace{0.5cm} j = 1, \ldots, n_s \\
   m(0) = m_{wet}&, \hspace{0.8cm} r(0) = r_0, \hspace{0.9cm} \dot{r}(0) = \dot{r}_0 \\
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0
-\end{align*}$$
+\end{align*}
 
-$0 < \rho_{1} \leq \left \lVert T_c(t) \right \rVert \leq \rho_{2} \forall t \in [0, t_f]$ is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
+Inequality \@ref(eq:3) is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
+
+The paper claims that $m^*(t) > 0$ in Lemma \@ref(lem:one), obviously in the real world this is true, however I don't see why this is true in [Problem 1] or [Problem 2]. In @aci2008 they add the constraint $m(t_f) \geq 0$ to their problem and in @bla2010 they add the constraint $m(t_f) \geq m_{dry}$. We will take $m(t) > 0$ to be true henceforth, however I will work out how to properly deal with this at a later date.
+
+Thrust direction can also be constrained at the start and at the end of a maneuver as 
+\begin{align*}
+  T_c(0) = ||T_c(0)|| \hat{n}_0, \hspace{1.5cm} T_c(t_f) = ||T_c(t_f)|| \hat{n}_f (\#eq:12)
+\end{align*} 
+where $\hat{n}_0$ and $\hat{n}_f$ are unit vectors describing the desired thrust directions.
 
 # Convexification of the Control Magnitude Constraint
 
@@ -85,40 +139,211 @@ In this section the paper formulates a modified version of [Problem 1] and shows
 
 The modified version of [Problem 1] is as follows:
 
-$$\begin{align*}
-  \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) \\
-  &||T_c(t)|| \leq \Gamma \\
-  0 &< \rho_1 \leq \Gamma(t) \leq \rho_2 \\
+\begin{align*}
+  \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) (\#eq:13) \\
+  &||T_c(t)|| \leq \Gamma(t) (\#eq:14) \\
+  0 &< \rho_1 \leq \Gamma(t) \leq \rho_2 (\#eq:15) \\
   \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &+ c^T_j x(t) + a_j \leq 0, \hspace{1cm} j = 1, \ldots, n_s \\
   m(0) &= m_{wet}, \hspace{0.6cm} r(0) = r_0, \hspace{0.5cm} \dot{r}(0) = \dot{r}_0 \\
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
-\end{align*}$$
+\end{align*}
 
-[Problem 2] has introduced a slack variable $\Gamma$ which replaces $\left \lVert T_c(t) \right \rVert $ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$.
-A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $T_c(t) = \Gamma(t)$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
+[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$.
+A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $\Gamma(t) = T_c(t)$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
 
-::: {.lemma}
-Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2 \text{ for } t \in [0, t_f^*]$.
+::: {.lemma #one}
+Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$ <!-- such that the corresponding state trajectory satisfies $x_1^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$^[This condition was added in @blackmore_minimum_landing_2008]. As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary -->. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
 :::
 
 ::: {.proof}
-Let $y = [x^T,\ m]^T$ and $x_1 = r,\ x_2 = \dot{r}$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian for [Problem 2] is $H(x, m, T_c, \Gamma, \lambda_0, \lambda) = \lambda_0 ( \Gamma ) + \lambda^T \dot{y}$ $= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma$ with $\lambda_0 \leq 0$.  Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continouous vector function $\lambda$ such that
+Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian^[I'll have a post explaining the Hamiltonian and Pontryagin's principle up soon] for [Problem 2] is 
+\begin{align*}
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &= \lambda_0 ( \Gamma ) + \lambda^T \dot{y} \\
+  &= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma (\#eq:16)
+\end{align*}
+with $\lambda_0 \leq 0$.
 
-1. $[\lambda_0,\ \lambda^T]^T \neq 0$ for all $t \in [0,\ t^*_f]$
-$$\begin{align*}
-  \dot{\lambda} = \frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right)
-\end{align*}$$ 
+The set of control constraints $\Psi$ is $\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}$ is a fixed set (I think this means it doesn't vary with time. Actually $\Gamma$ varies with time so I don't see how this set can't vary with time).
 
-2. $$\begin{align*}
-  H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.5cm} \forall v \in \Psi \hspace{0.5cm} \forall t \in [0, t^*_f]
-\end{align*}$$ 
+Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continouous function^[https://math.stackexchange.com/questions/191268/absolutely-continuous-functions seems like a nice description of what an absolutely continouous function is] $\lambda$ such that
 
-3. The transversality condition: $\left[ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T \right]^T$ must be orthorgonal to $\left[ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T \right]$ 
+1. $[\lambda_0,\ \lambda^T]^T \neq 0 \; \forall \; t \in [0,\ t^*_f]$ and
+\begin{align*}
+  \dot{\lambda} = -\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) (\#eq:17)
+\end{align*} 
+
+2. *Pointwise maximum principle* given below must be satisified
+\begin{align*}
+  H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.3cm} \; \forall \; v \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [0, t^*_f] (\#eq:18)
+\end{align*} 
+
+Simply put the Hamiltonian must be maximised with respect to $v$ at all times.
+
+3. The following *transversality condition* must be satisfied: Let $\psi = [y^{*^T}, v^{*^T}, \lambda_0, \lambda^{T} ]^{T}$, then $[ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T$ must be orthorgonal to the set of feasible initial and final conditions $[0, y(0), t_f, y(t_f) ]$ at the point $[ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T ]$.
 :::
 
-We can see $\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) = -\begin{bmatrix}
-0 \\
-\lambda_1 \\
-\lambda_2^T T^*_c * -\frac{1}{m^2}
-\end{bmatrix}$
+Starting with the first necessary condition \@ref(eq:17), we can see that ^[Check out comments of answer at https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors to see why $\frac{d}{d x_2} \lambda_1^T x_2 = \lambda_1$]
+ \begin{align*}
+  \frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) &= [
+    0,\ \lambda_1,\ \lambda_2^T T^*_c * -\frac{1}{m^2}
+  ]^T \\
+  \therefore \dot{\lambda}_1 &= 0 (\#eq:19) \\ 
+  \dot{\lambda}_2 &= -\lambda_1 (\#eq:20) \\ 
+  \dot{\lambda}_3 &= \frac{1}{m^2} \lambda_2^T T^{*}_{c} 
+\end{align*} 
+
+Now onto the transversality condition, let us first construct the set of feasible initial and final conditions $\left[0,\ y(0),\ t_f,\ y(t_f) \right]$. 
+We know $y(0)$ is the point $[r_0, \dot{r}_0, m_{wet}]^T$ and $y(t_f) = [0, 0, 0, 0, 0, 0, m(t_f)]$^[You may note that $x(t_f)$ can be anything as long as it is a point @bla2010], so the the only values in the set that can vary are $t_f$ and $m(t_f)$. 
+If a vector is orthogonal to a set at a point, it's dot product with the tangent vectors to the set at the point will be 0. 
+The tangent vectors to the set are 
+\begin{align*}
+  \left. \frac{\partial}{\partial t_f} \right|_{t_f=t_f^*} \left[0, y(0), t_f, y(t_f) \right] = e_9, \hspace{0.5cm} \left. \frac{\partial}{\partial m(t_f)} \right|_{m(t_f)=m(t_f^*)} \left[0, y(0), t_f, y(t_f) \right] = e_{16}
+\end{align*}
+So 
+\begin{align*}
+  [ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T \cdot e_9 = 0
+\end{align*} 
+giving $-H(\psi(t^*_f)) = 0$ ^[note $\lambda_1$ and $\lambda_2$ have three elements ($\lambda_{1, 2} \in \mathbb{R}^3$) whilst $\lambda_3$ only has one ($\lambda_3 \in \mathbb{R}$)] and similarly $\lambda_3(t^*_f) = 0$.
+
+Now we will show by contradiction that the statement $\lambda_2(t) = 0 \; \forall \; t \in [0, t_f^*]$ is false. Let's assume the statement is true, then $\dot{\lambda}_3 = 0$ and we know $\lambda_3(t_f^*) = 0$ so $\lambda_3 = 0$. We also know $\dot{\lambda}_2 = 0$ if it is always 0 and so $\lambda_1 = 0$. Since $H(\psi(t_f^*)) = \lambda_0 \Gamma = 0$, $\lambda_0 = 0$ which violates the first necessary condition $[\lambda_0,\ \lambda^T]^T \neq 0 \; \forall \; t \in [0,\ t^*_f]$. Therefore the statement is false.
+
+As $\lambda_1$ is a constant, $\lambda_2 = -\lambda_1 t + a$ for some constant a. As we know $\lambda_2$ is not identically zero then $\lambda_2$ can be zero, at most, at one point on $[0, t_f^*]$.
+
+We can express the Hamiltonian as 
+\begin{align*}
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) = R_1(t) \Gamma + R_2(t)^T T_c + R_0(t) (\#eq:21)
+\end{align*} 
+where 
+\begin{align*}
+  R_0(t) = \lambda_1(t)^T x_2(t) + \lambda_2(t)^T &g, \hspace{1cm} R_1(t) = \lambda_0 -\alpha \lambda_3(t) \\
+  R_2(t) &= \frac{\lambda_2(t)}{m(t)}
+\end{align*} 
+
+To maximise the Hamiltonian per the pointwise maximum principle \@ref(eq:18) we want to maximise $R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta$, we want to maximise $||T_c(t)|| \cos \theta$ unless $||R_2(t)|| = 0$. As $||R_2(t)|| = 0$ iff $\lambda_2(t) = 0$ as $m^*(t) \neq 0$. 
+As $\lambda_2(t) \neq 0$ a.e. on $t \in [0, t_f^*]$ then we want to maximise $||T_c(t)|| \cos \theta$ a.e. on $t \in [0, t_f^*]$. 
+So we want to maximise $||T_c(t)||$ as long as $\cos \theta(t) \neq 0$. 
+As we can choose $\theta$ without constraint for $t \in (0, t^*_f)$^[The start/end constraints determine $\theta$], we choose $\cos \theta = 1$ for $t \in (0, t^*_f)$. 
+The maximum of $||T_c(t)||$ is $\Gamma(t)$ per $\Psi$ so 
+\begin{align*}
+  ||T^*_c(t)|| &= \Gamma^*(t) \text{ a.e. on } [0, t^*_f] (\#eq:22)\\
+  T^*_c &= \frac{R_2}{||R_2||} \Gamma^* \text{ a.e. on } t \in [0, t_f^*] \ (\text{as } ||R_2|| \neq 0 \text{ a.e. on } [0, t_f^*]), \\
+  \rho_1 &\leq ||T^*_c(t)|| \leq \rho_2 \text{ a.e. on } t \in [0, t_f^*]
+\end{align*}
+
+Therefore an optimal solution of [Problem 2] satisfies all the constraints of [Problem 1] and the objective function is the same so it also defines an optimal solution for [Problem 1].
+
+Now we will show that $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for any $t \in [0, t_f^*]$ by using the pointwise maximum principle. 
+We can now see that ^[$\cos \theta = 1$ except when start/end constraints are binding]
+\begin{align*}
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) = H(\psi(t)) = R_{12}(t) \Gamma + R_0(t), \text{   where } R_{12}(t) = R_1(t) + ||R_2(t)||
+\end{align*}
+
+The pointwise maximum principle implies that 
+\begin{align*}
+  \Gamma^*(t) =
+  \begin{cases}
+    \rho_1, & \text{if } R_{12}(t) < 0 \\
+    \rho_2, & \text{if } R_{12}(t) > 0
+  \end{cases}
+\end{align*} 
+We can ignore the $R_{12}(t) = 0$ case as we can show that $R_{12}(t) \neq 0$ a.e. on $t \in [0, t_f^*]$.
+
+As $R_1(t) = \lambda_0 - \alpha \lambda_3(t)$ we note that 
+\begin{align*}
+  \dot{R}_1(t) &= -\alpha \frac{1}{m^2}\lambda_2^T T^*_c \\
+  &= - \frac{\alpha}{m} R_2^T T^*_c \\
+  &= - \frac{\alpha}{m} R_2^T \frac{R_2}{||R_2||} \Gamma^* \\
+  &= - \frac{\alpha}{m} ||R_2|| \Gamma^*
+\end{align*}
+
+Also by noting that $||R_2|| = \frac{||\lambda_2||}{m}$ (as $m > 0$) note that
+\begin{align*}
+  \frac{d ||R_2||}{d t} &= \frac{1}{m} \frac{d ||\lambda_2||}{d t} - \frac{\dot{m}}{m^2} ||\lambda_2|| \\
+  &= \frac{1}{m} \frac{d ||\lambda_2||}{d t} + \frac{\alpha \Gamma^*}{m^2} ||\lambda_2|| \\
+  &= \frac{1}{m} \frac{d ||\lambda_2||}{d t} + \frac{\alpha}{m} ||R_2|| \Gamma^*
+\end{align*} 
+
+So \begin{align*}
+  m \dot{R}_{12} &= m\dot{R}_1 + m \dot{||R_2||} \\
+  &= - \alpha ||R_2|| \Gamma^* + \frac{d ||\lambda_2||}{d t} + \alpha ||R_2|| \Gamma^* \\
+  &= \frac{d ||\lambda_2||}{d t} \\
+  &= -\frac{\lambda_2^T}{||\lambda_2||} \lambda_1 \\
+  &= -\frac{1}{||\lambda_2||} (-\lambda_1 t + a)^T \lambda_1 \\
+  &= \frac{1}{||\lambda_2||} (\lambda_1^T \lambda_1 t - a^T \lambda_1) \\
+  &= \frac{1}{||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a)
+\end{align*} ^[\begin{align*}
+  \text{let } \lambda_2(t) &= [f_1(t), f_2(t) \ldots f_n(t)] \\
+  \frac{d ||\lambda_2||}{d t} &= \frac{d }{d t} \sqrt{\sum f_i(t)^2 } \\
+  &= \frac{1}{2} \frac{1}{||\lambda_2||} ( 2 f_1(t) \dot{f}_1(t) + 2 f_2(t) \dot{f}_2(t) + \dots + 2 f_n(t) \dot{f}_n(t) ) \\
+  &= \frac{\lambda_2^T}{||\lambda_2||} \dot{\lambda}_2
+\end{align*} Where has the half come from?????]
+where $\lambda_1$ and $a$ are constant vectors and they cannot both be zeros as that would imply that $\lambda_2$ is identically 0 and we know this to be false.
+
+If $\lambda_1 \neq 0$ then $m \dot{R}_{12}$ is not identically 0 and as $m \neq 0$ we know $\dot{R}_{12}$ is not identically 0. When $\lambda_1 \neq 0$, we can see that $\frac{d }{d t} m \dot{R}_{12} = ||\lambda_2|| > 0$
+\begin{align*}
+  \ddot{R}_{12} &= \frac{||\lambda_2||}{m} - \frac{1}{m^2} \dot{m} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a) \\
+  &= \frac{||\lambda_2||}{m} + \frac{\alpha \Gamma}{m^2} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a)
+\end{align*}
+Therefore it can only be zero at one point and the sign can only change from negative to positive so, there can only be two points at max where $R_{12} = 0$ so $R_{12} \neq = 0$ a.e. on [0, t_f] when $\lambda_1 \neq 0$.
+
+Note that $\dot{R}_{12} = 0$ on some interval $[t_a, t_b]$ which is a subset (don't think it has to be strict) of $[0, t_f]$ only if $\lambda_1 = 0$. If $\lambda_1 = 0$ then $\dot{R}_{12} = 0 \; \forall \; t \in [0, t_f]$, so to show $R_{12} \neq 0$ we still need to show that $R_{12}$ is not identically 0 when $\lambda_1 = 0$. To do this, suppose that $R_{12}$ is identically 0 when $\lambda_1 = 0$. This implies $\lambda_2$ is constant in time and 
+\begin{align*}
+  H(\psi(t_f^*)) = R_0(t) + R_{12}(t)\Gamma^*(t) = R_0(t) = 0 \\
+  R_0(t) = \lambda_1(t)^T x_2(t) + \lambda_2(t)^T g = g^T \lambda_2(t) = 0
+\end{align*}
+
+Since $T_c^* = \frac{R_2}{||R_2||}\Gamma^* = \frac{\lambda_2}{||\lambda_2||} \Gamma^*$ then $g^T T_c^* = g^T \lambda_2 \frac{R_2}{||\lambda_2||} = 0$.
+
+Recall $\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}$, where $g$ is a constant and $\frac{T_c^*(t)}{m(t)} = \frac{\Gamma^*(t)}{m(t)} \hat{n}$, letting $\hat{n} = \frac{\lambda_2}{||\lambda_2||}$ which is a constant, is always pointing in the direction of $\hat{n}$. The $\frac{T_c^*(t)}{m(t)}$ component will therefore only affect velocity in the $\hat{n}$ direction. Therefore $\dot{r}(t) = g t + \beta(t) \hat{n} + \dot{r}_0$
+^[
+\begin{align*}
+  \dot{r}(t) - \dot{r}_0 &= g (t - 0) + \int_{0}^{t} \frac{\Gamma^*(s)}{m(s)} \hat{n} \,ds\\
+  \text{remember }\dot{m} &= - \alpha \Gamma(t) \\
+  &= g t - \int_{0}^{t} \frac{\dot{m}(s)}{m(s)} \frac{\hat{n}}{\alpha} \,ds \\
+  &= g t - \frac{\hat{n}}{\alpha}  \int_{0}^{t} \frac{\dot{m}(s)}{m(s)} \,ds \\
+  &= g t - \frac{\hat{n}}{\alpha}  \ln \frac{m(t)}{m(0)}
+\end{align*} 
+You will notice this is the same as the rocket equation (https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based) with $R(t) = -\alpha \Gamma(t)$ and $v_e = \frac{1}{\alpha}$.
+] 
+and so $\dot{r}(t_f) = g t_f + \beta_2 \hat{n} + \dot{r}_0 = 0$. Integrating $\dot{r}(t)$ we get $r(t) = r_0 + \dot{r}_0 t + g \frac{t^2}{2} + B(t) \hat{n}$.
+^[
+  \begin{align*}
+    r(t) - r_0 = \dot{r}_0 (t - 0) + g \frac{(t - 0)^2}{2} + \frac{\hat{n}}{\alpha} 
+  \end{align*} 
+idk
+]
+So $r(t_f) = r_0 + \dot{r}_0 t_f + g \frac{t_f^2}{2} + \beta_1 \hat{n} = 0$.
+
+Recall $g^T T_c^* = 0$ and $T_c^* = \Gamma^* \hat{n}$ so $g^T \hat{n} = 0$. Then 
+\begin{align*}
+  -\frac{g^T}{||g||} \dot{r}(t_f) &= -||g|| t_f - \frac{g^T}{||g||} \beta_2 \hat{n} - \frac{g}{||g||} \dot{r}_0 \\
+  &= -||g|| t_f + \dot{r}_{0_1} \\
+  &= 0 ,
+\end{align*} 
+remember $\dot{r}_{0_1} = -\frac{g^T}{||g||} \dot{r}_0$. 
+Also 
+\begin{align*}
+  -\frac{g^T}{||g||} r(t_f) &= r_{0_1} + \dot{r}_{0_1} t_f - ||g|| \frac{t_f^2}{2} \\
+  &= 0 ,
+\end{align*} 
+remember $r_{0_1} = -\frac{g^T}{||g||} r_0$.
+
+\begin{align*}
+  \dot{r}_{0_1} &= ||g|| t_f \geq 0\\
+  r_{0_1} &= ||g|| \frac{t_f^2}{2} - \dot{r}_{0_1} t_f  \\ 
+  &= ||g|| \frac{t_f^2}{2} - ||g|| t_f \\
+  &= -||g|| \frac{t_f^2}{2} \\
+  &= -\frac{\dot{r}_{0_1}^2}{2||g||} \leq 0
+\end{align*}
+Recall we assumed $r_{0_1} > 0$ in \@ref(eq:6), which leads to a contradiction. 
+Therefore, $R_{12}(t) \neq 0 \; \forall \; t \in [0, t_f]$ when $\lambda_1 = 0$ and so $R_{12}(t) \neq 0$ a.e. on $[0, t_f^*]$.
+
+The proof of Lemma \@ref(lem:one) is thus complete. Lemma \@ref(lem:one) implies that main nonconvex constraint on the thrust magnitude \@ref(eq:3) in [Problem 1] is convexified by replacing it with \@ref(eq:14) and \@ref(eq:15) in Problem 2 via the introduction of a slack variable $\Gamma$. Furthemore, Lemma \@ref(lem:one) states that if there exists and optimal solution for [Problem 2], then there also exist one for [Problem 1] and it can be obtained directly from the optimal solution of [Problem 2].
+
+To add the start/end thrust direction constraints \@ref(eq:12) to [Problem 2] we use \@ref(eq:22) to get the constraints 
+\begin{align*}
+  T_c(0) = \Gamma(0) \hat{n}_0, \hspace{1cm} T_c(t_f) = \Gamma(t_f) \hat{n}_f (\#eq:23)
+\end{align*}
+ 
+# References
