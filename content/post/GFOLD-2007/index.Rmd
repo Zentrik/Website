@@ -98,15 +98,37 @@ where
   \dot{r}
   \end{bmatrix} (\#eq:9)
 \end{align*}
-The paper imposes three inequalities in this form: constraint \@ref(eq:7); a bound on the velocity 
+The paper imposes three inequalities in this form. constraint \@ref(eq:7) is written as
 \begin{align*}
-  || \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f] (\#eq:10)
+  [-1,\ 0,\ 0,\ 0,\ 0,\ 0] x \leq 0
 \end{align*}
-and a "glide slope" constraint
+The second constraint is a bound on the velocity 
 \begin{align*}
-  \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}
+  || \dot{r}(t) || \leq \hat{V} \text{ for } t \in [0, t_f] (\#eq:10) \\
+  \left \lVert [0,\ 0,\ 0,\ 1,\ 1,\ 1] x(t) \right \rVert - \hat{V} \leq 0
+\end{align*}
+The last constraint is a "glide slope" constraint ($\theta_{alt}$ is given)
+\begin{align*}
+  \theta_{alt} = \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq r_1(t) \tan \tilde{\theta}_{alt}
 \end{align*} 
-where $\tilde{\theta}_\text{alt}$ is given.
+which can be written using the following form of \@ref(eq:8) 
+\begin{align*}
+  ||Sx|| + c^T x \leq 0 (\#eq:11)
+\end{align*} 
+where 
+\begin{align*}
+  S = \begin{bmatrix}
+  0 & 1 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 1 & 0 & 0 & 0
+  \end{bmatrix}, \hspace{1cm}
+  c = \begin{bmatrix}
+  -\tan \tilde{\theta}_{alt} & 0 & 0 & 0 & 0 & 0
+  \end{bmatrix}^T
+\end{align*}
+The "glide slope" constraint also enforces $r_1(t) \geq 0$, if $r_1(t) < 0$ then $c^T x \geq 0$ and so $||Sx|| \leq 0$ so $x = 0$ and $r_1(t) = 0$ which is a contradiction.
+
+In @bla2010 
 
 ### Problem 1
 
@@ -124,6 +146,11 @@ Given the dynamics and constraints outlined above, the trajectory which maximise
 Inequality \@ref(eq:3) is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
 
 The paper claims that $m^*(t) > 0$ in Lemma \@ref(lem:one), obviously in the real world this is true, however I don't see why this is true in [Problem 1] or [Problem 2]. In @aci2008 they add the constraint $m(t_f) \geq 0$ to their problem and in @bla2010 they add the constraint $m(t_f) \geq m_{dry}$. We will take $m(t) > 0$ to be true henceforth, however I will work out how to properly deal with this at a later date.
+
+`The spacecraft has an available fuel amount, mfuel, that is not explicitly incorporated into the
+trajectory optimization problem FOP. If the optimal fuel amount needed for FOP is larger than the available
+fuel then the problem is infeasible. Another form of infeasibility occurs when there is no solution to FOP,
+due to control and/or state constraints' ???
 
 Thrust direction can also be constrained at the start and at the end of a maneuver as 
 \begin{align*}
@@ -153,7 +180,7 @@ The modified version of [Problem 1] is as follows:
 A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $\Gamma(t) = T_c(t)$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
 
 ::: {.lemma #one}
-Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$ <!-- such that the corresponding state trajectory satisfies $x_1^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$^[This condition was added in @blackmore_minimum_landing_2008]. As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary -->. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
+Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$^[such that the corresponding state trajectory satisfies $x^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$^[This condition was added in @bla2010] ($X$ here enforces all three state constraints, so $X = \{x \in \mathbb{R}^6: ||Sx|| + c^T x \leq 0 \text{ and } || \dot{r}(t) || \leq \hat{V} \}$). I've tried to incorporate the velocity constraint idk if this right <!-- As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary. Actually we have $r_1(t) \geq 0$. -->]. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
 :::
 
 ::: {.proof}
@@ -280,12 +307,7 @@ So \begin{align*}
 \end{align*} Where has the half come from?????]
 where $\lambda_1$ and $a$ are constant vectors and they cannot both be zeros as that would imply that $\lambda_2$ is identically 0 and we know this to be false.
 
-If $\lambda_1 \neq 0$ then $m \dot{R}_{12}$ is not identically 0 and as $m \neq 0$ we know $\dot{R}_{12}$ is not identically 0. When $\lambda_1 \neq 0$, we can see that $\frac{d }{d t} m \dot{R}_{12} = ||\lambda_2|| > 0$
-\begin{align*}
-  \ddot{R}_{12} &= \frac{||\lambda_2||}{m} - \frac{1}{m^2} \dot{m} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a) \\
-  &= \frac{||\lambda_2||}{m} + \frac{\alpha \Gamma}{m^2} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a)
-\end{align*}
-Therefore it can only be zero at one point and the sign can only change from negative to positive so, there can only be two points at max where $R_{12} = 0$ so $R_{12} \neq = 0$ a.e. on [0, t_f] when $\lambda_1 \neq 0$.
+If $\lambda_1 \neq 0$ then $m \dot{R}_{12}$ is not identically 0 and as $m \neq 0$ we know $\dot{R}_{12}$ is not identically 0. When $\lambda_1 \neq 0$, we can see that $\frac{d}{dt} m \dot{R}_{12} = \frac{||\lambda_1||^2}{||\lambda_2||} > 0$, so $m\dot{R}_{12}$ can only be zero at one point and the sign can only change from negative to positive. As $m > 0$ the sign of $\dot{R}_{12}$ is the same as $m\dot{R}_{12}$, there can only be two points at maximum where $R_{12} = 0$ so $R_{12} \neq 0$ a.e. on [0, t_f] when $\lambda_1 \neq 0$.
 
 Note that $\dot{R}_{12} = 0$ on some interval $[t_a, t_b]$ which is a subset (don't think it has to be strict) of $[0, t_f]$ only if $\lambda_1 = 0$. If $\lambda_1 = 0$ then $\dot{R}_{12} = 0 \; \forall \; t \in [0, t_f]$, so to show $R_{12} \neq 0$ we still need to show that $R_{12}$ is not identically 0 when $\lambda_1 = 0$. To do this, suppose that $R_{12}$ is identically 0 when $\lambda_1 = 0$. This implies $\lambda_2$ is constant in time and 
 \begin{align*}
@@ -346,4 +368,8 @@ To add the start/end thrust direction constraints \@ref(eq:12) to [Problem 2] we
   T_c(0) = \Gamma(0) \hat{n}_0, \hspace{1cm} T_c(t_f) = \Gamma(t_f) \hat{n}_f (\#eq:23)
 \end{align*}
  
+## Existence of an Optimal solution
+
+
+
 # References

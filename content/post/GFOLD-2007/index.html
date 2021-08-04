@@ -33,6 +33,7 @@ bibliography: ref.bib
 <li><a href="#convexification-of-the-control-magnitude-constraint">Convexification of the Control Magnitude Constraint</a>
 <ul>
 <li><a href="#problem-2">Problem 2</a></li>
+<li><a href="#existence-of-an-optimal-solution">Existence of an Optimal solution</a></li>
 </ul></li>
 <li><a href="#references">References</a></li>
 </ul>
@@ -100,15 +101,36 @@ where
   \dot{r}
   \end{bmatrix} \tag{9}
 \end{align*}\]</span>
-The paper imposes three inequalities in this form: constraint <a href="#eq:7">(7)</a>; a bound on the velocity
-<span class="math display" id="eq:10">\[\begin{align*}
-  || \dot{r}(t) \leq \hat{V}|| \text{ for } t \in [0, t_f] \tag{10}
-\end{align*}\]</span>
-and a “glide slope” constraint
+The paper imposes three inequalities in this form. constraint <a href="#eq:7">(7)</a> is written as
 <span class="math display">\[\begin{align*}
-  \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2}
+  [-1,\ 0,\ 0,\ 0,\ 0,\ 0] x \leq 0
 \end{align*}\]</span>
-where <span class="math inline">\(\tilde{\theta}_\text{alt}\)</span> is given.</p>
+The second constraint is a bound on the velocity
+<span class="math display" id="eq:10">\[\begin{align*}
+  || \dot{r}(t) || \leq \hat{V} \text{ for } t \in [0, t_f] \tag{10} \\
+  \left \lVert [0,\ 0,\ 0,\ 1,\ 1,\ 1] x(t) \right \rVert - \hat{V} \leq 0
+\end{align*}\]</span>
+The last constraint is a “glide slope” constraint (<span class="math inline">\(\theta_{alt}\)</span> is given)
+<span class="math display">\[\begin{align*}
+  \theta_{alt} = \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq r_1(t) \tan \tilde{\theta}_{alt}
+\end{align*}\]</span>
+which can be written using the following form of <a href="#eq:8">(8)</a>
+<span class="math display" id="eq:11">\[\begin{align*}
+  ||Sx|| + c^T x \leq 0 \tag{11}
+\end{align*}\]</span>
+where
+<span class="math display">\[\begin{align*}
+  S = \begin{bmatrix}
+  0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+  0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0
+  \end{bmatrix}, \hspace{1cm}
+  c = \begin{bmatrix}
+  -\tan \tilde{\theta}_{alt} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+  \end{bmatrix}^T
+\end{align*}\]</span>
+The “glide slope” constraint also enforces <span class="math inline">\(r_1(t) \geq 0\)</span>, if <span class="math inline">\(r_1(t) &lt; 0\)</span> then <span class="math inline">\(c^T x \geq 0\)</span> and so <span class="math inline">\(||Sx|| \leq 0\)</span> so <span class="math inline">\(x = 0\)</span> and <span class="math inline">\(r_1(t) = 0\)</span> which is a contradiction.</p>
+<p>In <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span></p>
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is descirbed as follows:</p>
@@ -122,9 +144,13 @@ where <span class="math inline">\(\tilde{\theta}_\text{alt}\)</span> is given.</
 \end{align*}\]</span></p>
 <p>Inequality <a href="#eq:3">(3)</a> is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.</p>
 <p>The paper claims that <span class="math inline">\(m^*(t) &gt; 0\)</span> in Lemma <a href="#lem:one">1</a>, obviously in the real world this is true, however I don’t see why this is true in <a href="#problem-1">Problem 1</a> or <a href="#problem-2">Problem 2</a>. In <span class="citation"><a href="#ref-aci2008" role="doc-biblioref">Açıkmese et al.</a> (<a href="#ref-aci2008" role="doc-biblioref">2008</a>)</span> they add the constraint <span class="math inline">\(m(t_f) \geq 0\)</span> to their problem and in <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span> they add the constraint <span class="math inline">\(m(t_f) \geq m_{dry}\)</span>. We will take <span class="math inline">\(m(t) &gt; 0\)</span> to be true henceforth, however I will work out how to properly deal with this at a later date.</p>
+<p>`The spacecraft has an available fuel amount, mfuel, that is not explicitly incorporated into the
+trajectory optimization problem FOP. If the optimal fuel amount needed for FOP is larger than the available
+fuel then the problem is infeasible. Another form of infeasibility occurs when there is no solution to FOP,
+due to control and/or state constraints’ ???</p>
 <p>Thrust direction can also be constrained at the start and at the end of a maneuver as
 <span class="math display" id="eq:12">\[\begin{align*}
-  T_c(0) = ||T_c(0)|| \hat{n}_0, \hspace{1.5cm} T_c(t_f) = ||T_c(t_f)|| \hat{n}_f \tag{11}
+  T_c(0) = ||T_c(0)|| \hat{n}_0, \hspace{1.5cm} T_c(t_f) = ||T_c(t_f)|| \hat{n}_f \tag{12}
 \end{align*}\]</span>
 where <span class="math inline">\(\hat{n}_0\)</span> and <span class="math inline">\(\hat{n}_f\)</span> are unit vectors describing the desired thrust directions.</p>
 </div>
@@ -136,9 +162,9 @@ where <span class="math inline">\(\hat{n}_0\)</span> and <span class="math inlin
 <h3>Problem 2</h3>
 <p>The modified version of <a href="#problem-1">Problem 1</a> is as follows:</p>
 <p><span class="math display" id="eq:15" id="eq:14" id="eq:13">\[\begin{align*}
-  \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&amp;dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) \tag{12} \\
-  &amp;||T_c(t)|| \leq \Gamma(t) \tag{13} \\
-  0 &amp;&lt; \rho_1 \leq \Gamma(t) \leq \rho_2 \tag{14} \\
+  \min_{t_f, T_c(\bullet), \Gamma(\bullet)} \int_{0}^{t_f} \Gamma(t) \,&amp;dt \hspace{1cm} \text{subject to } \dot{m}(t) = - \alpha \Gamma (t) \tag{13} \\
+  &amp;||T_c(t)|| \leq \Gamma(t) \tag{14} \\
+  0 &amp;&lt; \rho_1 \leq \Gamma(t) \leq \rho_2 \tag{15} \\
   \ddot{r}(t) &amp;= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &amp;+ c^T_j x(t) + a_j \leq 0, \hspace{1cm} j = 1, \ldots, n_s \\
   m(0) &amp;= m_{wet}, \hspace{0.6cm} r(0) = r_0, \hspace{0.5cm} \dot{r}(0) = \dot{r}_0 \\
@@ -147,25 +173,25 @@ where <span class="math inline">\(\hat{n}_0\)</span> and <span class="math inlin
 <p><a href="#problem-2">Problem 2</a> has introduced a slack variable <span class="math inline">\(\Gamma\)</span> which replaces <span class="math inline">\(|| T_c ||\)</span> and introduces a new constraint <span class="math inline">\(\left \lVert T_c(t) \right \rVert \leq \Gamma(t)\)</span>.
 A solution to <a href="#problem-1">Problem 1</a> is clearly a feasible solution of <a href="#problem-2">Problem 2</a> as we can simply set <span class="math inline">\(\Gamma(t) = T_c(t)\)</span>, however the converse needs to be proved and so below it wil be shown that an optimal solution of <a href="#problem-2">Problem 2</a> is also an optimal solution of <a href="#problem-1">Problem 1</a>, which allows us to solve <a href="#problem-1">Problem 1</a> by solving the convex <a href="#problem-2">Problem 2</a>.</p>
 <div class="lemma">
-<p><span id="lem:one" class="lemma"><strong>Lemma 1  </strong></span>Consider a solution of <a href="#problem-2">Problem 2</a> given by <span class="math inline">\([t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]\)</span> <!-- such that the corresponding state trajectory satisfies $x_1^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$^[This condition was added in @blackmore_minimum_landing_2008]. As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary -->. Then, <span class="math inline">\([t_f^*, T_c^* (\bullet)]\)</span> is also a solution of <a href="#problem-1">Problem 1</a> and <span class="math inline">\(||T_c^*(t)|| = \rho_1\)</span> or <span class="math inline">\(||T_c^*(t)|| = \rho_2\)</span> for <span class="math inline">\(t \in [0, t_f^*]\)</span>.</p>
+<p><span id="lem:one" class="lemma"><strong>Lemma 1  </strong></span>Consider a solution of <a href="#problem-2">Problem 2</a> given by <span class="math inline">\([t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]\)</span><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Then, <span class="math inline">\([t_f^*, T_c^* (\bullet)]\)</span> is also a solution of <a href="#problem-1">Problem 1</a> and <span class="math inline">\(||T_c^*(t)|| = \rho_1\)</span> or <span class="math inline">\(||T_c^*(t)|| = \rho_2\)</span> for <span class="math inline">\(t \in [0, t_f^*]\)</span>.</p>
 </div>
 <div class="proof">
-<p><span id="unlabeled-div-1" class="proof"><em>Proof</em>. </span>Let <span class="math inline">\(y = [x^T,\ m]^T\)</span> and <span class="math inline">\(x = [x_1^T, x_2^T] = [r, \dot{r}]\)</span>, then <span class="math inline">\(\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T\)</span>. The Hamiltonian<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> for <a href="#problem-2">Problem 2</a> is
+<p><span id="unlabeled-div-1" class="proof"><em>Proof</em>. </span>Let <span class="math inline">\(y = [x^T,\ m]^T\)</span> and <span class="math inline">\(x = [x_1^T, x_2^T] = [r, \dot{r}]\)</span>, then <span class="math inline">\(\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T\)</span>. The Hamiltonian<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for <a href="#problem-2">Problem 2</a> is
 <span class="math display" id="eq:16">\[\begin{align*}
   H(x, m, T_c, \Gamma, \lambda_0, \lambda) &amp;= \lambda_0 ( \Gamma ) + \lambda^T \dot{y} \\
-  &amp;= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma \tag{15}
+  &amp;= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma \tag{16}
 \end{align*}\]</span>
 with <span class="math inline">\(\lambda_0 \leq 0\)</span>.</p>
 <p>The set of control constraints <span class="math inline">\(\Psi\)</span> is <span class="math inline">\(\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}\)</span> is a fixed set (I think this means it doesn’t vary with time. Actually <span class="math inline">\(\Gamma\)</span> varies with time so I don’t see how this set can’t vary with time).</p>
-<p>Let <span class="math inline">\(v = [T_c^T,\ \Gamma]^T\)</span>, then there exist a <span class="math inline">\(\lambda_0 \leq 0\)</span> and an absolutely continouous function<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> <span class="math inline">\(\lambda\)</span> such that</p>
+<p>Let <span class="math inline">\(v = [T_c^T,\ \Gamma]^T\)</span>, then there exist a <span class="math inline">\(\lambda_0 \leq 0\)</span> and an absolutely continouous function<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> <span class="math inline">\(\lambda\)</span> such that</p>
 <ol style="list-style-type: decimal">
 <li><p><span class="math inline">\([\lambda_0,\ \lambda^T]^T \neq 0 \; \forall \; t \in [0,\ t^*_f]\)</span> and
 <span class="math display" id="eq:17">\[\begin{align*}
-  \dot{\lambda} = -\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) \tag{16}
+  \dot{\lambda} = -\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) \tag{17}
 \end{align*}\]</span></p></li>
 <li><p><em>Pointwise maximum principle</em> given below must be satisified
 <span class="math display" id="eq:18">\[\begin{align*}
-  H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.3cm} \; \forall \; v \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [0, t^*_f] \tag{17}
+  H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.3cm} \; \forall \; v \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [0, t^*_f] \tag{18}
 \end{align*}\]</span></p></li>
 </ol>
 <p>Simply put the Hamiltonian must be maximised with respect to <span class="math inline">\(v\)</span> at all times.</p>
@@ -173,17 +199,17 @@ with <span class="math inline">\(\lambda_0 \leq 0\)</span>.</p>
 <li>The following <em>transversality condition</em> must be satisfied: Let <span class="math inline">\(\psi = [y^{*^T}, v^{*^T}, \lambda_0, \lambda^{T} ]^{T}\)</span>, then <span class="math inline">\([ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T\)</span> must be orthorgonal to the set of feasible initial and final conditions <span class="math inline">\([0, y(0), t_f, y(t_f) ]\)</span> at the point <span class="math inline">\([ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T ]\)</span>.</li>
 </ol>
 </div>
-<p>Starting with the first necessary condition <a href="#eq:17">(16)</a>, we can see that<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>
+<p>Starting with the first necessary condition <a href="#eq:17">(17)</a>, we can see that<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>
 <span class="math display" id="eq:20" id="eq:19">\[\begin{align*}
   \frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) &amp;= [
     0,\ \lambda_1,\ \lambda_2^T T^*_c * -\frac{1}{m^2}
   ]^T \\
-  \therefore \dot{\lambda}_1 &amp;= 0 \tag{18} \\ 
-  \dot{\lambda}_2 &amp;= -\lambda_1 \tag{19} \\ 
+  \therefore \dot{\lambda}_1 &amp;= 0 \tag{19} \\ 
+  \dot{\lambda}_2 &amp;= -\lambda_1 \tag{20} \\ 
   \dot{\lambda}_3 &amp;= \frac{1}{m^2} \lambda_2^T T^{*}_{c} 
 \end{align*}\]</span></p>
 <p>Now onto the transversality condition, let us first construct the set of feasible initial and final conditions <span class="math inline">\(\left[0,\ y(0),\ t_f,\ y(t_f) \right]\)</span>.
-We know <span class="math inline">\(y(0)\)</span> is the point <span class="math inline">\([r_0, \dot{r}_0, m_{wet}]^T\)</span> and <span class="math inline">\(y(t_f) = [0, 0, 0, 0, 0, 0, m(t_f)]\)</span><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, so the the only values in the set that can vary are <span class="math inline">\(t_f\)</span> and <span class="math inline">\(m(t_f)\)</span>.
+We know <span class="math inline">\(y(0)\)</span> is the point <span class="math inline">\([r_0, \dot{r}_0, m_{wet}]^T\)</span> and <span class="math inline">\(y(t_f) = [0, 0, 0, 0, 0, 0, m(t_f)]\)</span><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, so the the only values in the set that can vary are <span class="math inline">\(t_f\)</span> and <span class="math inline">\(m(t_f)\)</span>.
 If a vector is orthogonal to a set at a point, it’s dot product with the tangent vectors to the set at the point will be 0.
 The tangent vectors to the set are
 <span class="math display">\[\begin{align*}
@@ -193,31 +219,31 @@ So
 <span class="math display">\[\begin{align*}
   [ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T \cdot e_9 = 0
 \end{align*}\]</span>
-giving <span class="math inline">\(-H(\psi(t^*_f)) = 0\)</span><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> and similarly <span class="math inline">\(\lambda_3(t^*_f) = 0\)</span>.</p>
+giving <span class="math inline">\(-H(\psi(t^*_f)) = 0\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> and similarly <span class="math inline">\(\lambda_3(t^*_f) = 0\)</span>.</p>
 <p>Now we will show by contradiction that the statement <span class="math inline">\(\lambda_2(t) = 0 \; \forall \; t \in [0, t_f^*]\)</span> is false. Let’s assume the statement is true, then <span class="math inline">\(\dot{\lambda}_3 = 0\)</span> and we know <span class="math inline">\(\lambda_3(t_f^*) = 0\)</span> so <span class="math inline">\(\lambda_3 = 0\)</span>. We also know <span class="math inline">\(\dot{\lambda}_2 = 0\)</span> if it is always 0 and so <span class="math inline">\(\lambda_1 = 0\)</span>. Since <span class="math inline">\(H(\psi(t_f^*)) = \lambda_0 \Gamma = 0\)</span>, <span class="math inline">\(\lambda_0 = 0\)</span> which violates the first necessary condition <span class="math inline">\([\lambda_0,\ \lambda^T]^T \neq 0 \; \forall \; t \in [0,\ t^*_f]\)</span>. Therefore the statement is false.</p>
 <p>As <span class="math inline">\(\lambda_1\)</span> is a constant, <span class="math inline">\(\lambda_2 = -\lambda_1 t + a\)</span> for some constant a. As we know <span class="math inline">\(\lambda_2\)</span> is not identically zero then <span class="math inline">\(\lambda_2\)</span> can be zero, at most, at one point on <span class="math inline">\([0, t_f^*]\)</span>.</p>
 <p>We can express the Hamiltonian as
 <span class="math display" id="eq:21">\[\begin{align*}
-  H(x, m, T_c, \Gamma, \lambda_0, \lambda) = R_1(t) \Gamma + R_2(t)^T T_c + R_0(t) \tag{20}
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) = R_1(t) \Gamma + R_2(t)^T T_c + R_0(t) \tag{21}
 \end{align*}\]</span>
 where
 <span class="math display">\[\begin{align*}
   R_0(t) = \lambda_1(t)^T x_2(t) + \lambda_2(t)^T &amp;g, \hspace{1cm} R_1(t) = \lambda_0 -\alpha \lambda_3(t) \\
   R_2(t) &amp;= \frac{\lambda_2(t)}{m(t)}
 \end{align*}\]</span></p>
-<p>To maximise the Hamiltonian per the pointwise maximum principle <a href="#eq:18">(17)</a> we want to maximise <span class="math inline">\(R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta\)</span>, we want to maximise <span class="math inline">\(||T_c(t)|| \cos \theta\)</span> unless <span class="math inline">\(||R_2(t)|| = 0\)</span>. As <span class="math inline">\(||R_2(t)|| = 0\)</span> iff <span class="math inline">\(\lambda_2(t) = 0\)</span> as <span class="math inline">\(m^*(t) \neq 0\)</span>.
+<p>To maximise the Hamiltonian per the pointwise maximum principle <a href="#eq:18">(18)</a> we want to maximise <span class="math inline">\(R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta\)</span>, we want to maximise <span class="math inline">\(||T_c(t)|| \cos \theta\)</span> unless <span class="math inline">\(||R_2(t)|| = 0\)</span>. As <span class="math inline">\(||R_2(t)|| = 0\)</span> iff <span class="math inline">\(\lambda_2(t) = 0\)</span> as <span class="math inline">\(m^*(t) \neq 0\)</span>.
 As <span class="math inline">\(\lambda_2(t) \neq 0\)</span> a.e. on <span class="math inline">\(t \in [0, t_f^*]\)</span> then we want to maximise <span class="math inline">\(||T_c(t)|| \cos \theta\)</span> a.e. on <span class="math inline">\(t \in [0, t_f^*]\)</span>.
 So we want to maximise <span class="math inline">\(||T_c(t)||\)</span> as long as <span class="math inline">\(\cos \theta(t) \neq 0\)</span>.
-As we can choose <span class="math inline">\(\theta\)</span> without constraint for <span class="math inline">\(t \in (0, t^*_f)\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>, we choose <span class="math inline">\(\cos \theta = 1\)</span> for <span class="math inline">\(t \in (0, t^*_f)\)</span>.
+As we can choose <span class="math inline">\(\theta\)</span> without constraint for <span class="math inline">\(t \in (0, t^*_f)\)</span><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, we choose <span class="math inline">\(\cos \theta = 1\)</span> for <span class="math inline">\(t \in (0, t^*_f)\)</span>.
 The maximum of <span class="math inline">\(||T_c(t)||\)</span> is <span class="math inline">\(\Gamma(t)\)</span> per <span class="math inline">\(\Psi\)</span> so
 <span class="math display" id="eq:22">\[\begin{align*}
-  ||T^*_c(t)|| &amp;= \Gamma^*(t) \text{ a.e. on } [0, t^*_f] \tag{21}\\
+  ||T^*_c(t)|| &amp;= \Gamma^*(t) \text{ a.e. on } [0, t^*_f] \tag{22}\\
   T^*_c &amp;= \frac{R_2}{||R_2||} \Gamma^* \text{ a.e. on } t \in [0, t_f^*] \ (\text{as } ||R_2|| \neq 0 \text{ a.e. on } [0, t_f^*]), \\
   \rho_1 &amp;\leq ||T^*_c(t)|| \leq \rho_2 \text{ a.e. on } t \in [0, t_f^*]
 \end{align*}\]</span></p>
 <p>Therefore an optimal solution of <a href="#problem-2">Problem 2</a> satisfies all the constraints of <a href="#problem-1">Problem 1</a> and the objective function is the same so it also defines an optimal solution for <a href="#problem-1">Problem 1</a>.</p>
 <p>Now we will show that <span class="math inline">\(||T_c^*(t)|| = \rho_1\)</span> or <span class="math inline">\(||T_c^*(t)|| = \rho_2\)</span> for any <span class="math inline">\(t \in [0, t_f^*]\)</span> by using the pointwise maximum principle.
-We can now see that<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>
+We can now see that<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>
 <span class="math display">\[\begin{align*}
   H(x, m, T_c, \Gamma, \lambda_0, \lambda) = H(\psi(t)) = R_{12}(t) \Gamma + R_0(t), \text{   where } R_{12}(t) = R_1(t) + ||R_2(t)||
 \end{align*}\]</span></p>
@@ -251,22 +277,17 @@ We can ignore the <span class="math inline">\(R_{12}(t) = 0\)</span> case as we 
   &amp;= -\frac{1}{||\lambda_2||} (-\lambda_1 t + a)^T \lambda_1 \\
   &amp;= \frac{1}{||\lambda_2||} (\lambda_1^T \lambda_1 t - a^T \lambda_1) \\
   &amp;= \frac{1}{||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a)
-\end{align*}\]</span><a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>
+\end{align*}\]</span><a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>
 where <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(a\)</span> are constant vectors and they cannot both be zeros as that would imply that <span class="math inline">\(\lambda_2\)</span> is identically 0 and we know this to be false.</p>
-<p>If <span class="math inline">\(\lambda_1 \neq 0\)</span> then <span class="math inline">\(m \dot{R}_{12}\)</span> is not identically 0 and as <span class="math inline">\(m \neq 0\)</span> we know <span class="math inline">\(\dot{R}_{12}\)</span> is not identically 0. When <span class="math inline">\(\lambda_1 \neq 0\)</span>, we can see that <span class="math inline">\(\frac{d }{d t} m \dot{R}_{12} = ||\lambda_2|| &gt; 0\)</span>
-<span class="math display">\[\begin{align*}
-  \ddot{R}_{12} &amp;= \frac{||\lambda_2||}{m} - \frac{1}{m^2} \dot{m} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a) \\
-  &amp;= \frac{||\lambda_2||}{m} + \frac{\alpha \Gamma}{m^2} \frac{1}{m ||\lambda_2||} (||\lambda_1||^2 t - \lambda_1^T a)
-\end{align*}\]</span>
-Therefore it can only be zero at one point and the sign can only change from negative to positive so, there can only be two points at max where <span class="math inline">\(R_{12} = 0\)</span> so <span class="math inline">\(R_{12} \neq = 0\)</span> a.e. on [0, t_f] when <span class="math inline">\(\lambda_1 \neq 0\)</span>.</p>
+<p>If <span class="math inline">\(\lambda_1 \neq 0\)</span> then <span class="math inline">\(m \dot{R}_{12}\)</span> is not identically 0 and as <span class="math inline">\(m \neq 0\)</span> we know <span class="math inline">\(\dot{R}_{12}\)</span> is not identically 0. When <span class="math inline">\(\lambda_1 \neq 0\)</span>, we can see that <span class="math inline">\(\frac{d}{dt} m \dot{R}_{12} = \frac{||\lambda_1||^2}{||\lambda_2||} &gt; 0\)</span>, so <span class="math inline">\(m\dot{R}_{12}\)</span> can only be zero at one point and the sign can only change from negative to positive. As <span class="math inline">\(m &gt; 0\)</span> the sign of <span class="math inline">\(\dot{R}_{12}\)</span> is the same as <span class="math inline">\(m\dot{R}_{12}\)</span>, there can only be two points at maximum where <span class="math inline">\(R_{12} = 0\)</span> so <span class="math inline">\(R_{12} \neq 0\)</span> a.e. on [0, t_f] when <span class="math inline">\(\lambda_1 \neq 0\)</span>.</p>
 <p>Note that <span class="math inline">\(\dot{R}_{12} = 0\)</span> on some interval <span class="math inline">\([t_a, t_b]\)</span> which is a subset (don’t think it has to be strict) of <span class="math inline">\([0, t_f]\)</span> only if <span class="math inline">\(\lambda_1 = 0\)</span>. If <span class="math inline">\(\lambda_1 = 0\)</span> then <span class="math inline">\(\dot{R}_{12} = 0 \; \forall \; t \in [0, t_f]\)</span>, so to show <span class="math inline">\(R_{12} \neq 0\)</span> we still need to show that <span class="math inline">\(R_{12}\)</span> is not identically 0 when <span class="math inline">\(\lambda_1 = 0\)</span>. To do this, suppose that <span class="math inline">\(R_{12}\)</span> is identically 0 when <span class="math inline">\(\lambda_1 = 0\)</span>. This implies <span class="math inline">\(\lambda_2\)</span> is constant in time and
 <span class="math display">\[\begin{align*}
   H(\psi(t_f^*)) = R_0(t) + R_{12}(t)\Gamma^*(t) = R_0(t) = 0 \\
   R_0(t) = \lambda_1(t)^T x_2(t) + \lambda_2(t)^T g = g^T \lambda_2(t) = 0
 \end{align*}\]</span></p>
 <p>Since <span class="math inline">\(T_c^* = \frac{R_2}{||R_2||}\Gamma^* = \frac{\lambda_2}{||\lambda_2||} \Gamma^*\)</span> then <span class="math inline">\(g^T T_c^* = g^T \lambda_2 \frac{R_2}{||\lambda_2||} = 0\)</span>.</p>
-<p>Recall <span class="math inline">\(\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}\)</span>, where <span class="math inline">\(g\)</span> is a constant and <span class="math inline">\(\frac{T_c^*(t)}{m(t)} = \frac{\Gamma^*(t)}{m(t)} \hat{n}\)</span>, letting <span class="math inline">\(\hat{n} = \frac{\lambda_2}{||\lambda_2||}\)</span> which is a constant, is always pointing in the direction of <span class="math inline">\(\hat{n}\)</span>. The <span class="math inline">\(\frac{T_c^*(t)}{m(t)}\)</span> component will therefore only affect velocity in the <span class="math inline">\(\hat{n}\)</span> direction. Therefore <span class="math inline">\(\dot{r}(t) = g t + \beta(t) \hat{n} + \dot{r}_0\)</span><a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>
-and so <span class="math inline">\(\dot{r}(t_f) = g t_f + \beta_2 \hat{n} + \dot{r}_0 = 0\)</span>. Integrating <span class="math inline">\(\dot{r}(t)\)</span> we get <span class="math inline">\(r(t) = r_0 + \dot{r}_0 t + g \frac{t^2}{2} + B(t) \hat{n}\)</span>.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>
+<p>Recall <span class="math inline">\(\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}\)</span>, where <span class="math inline">\(g\)</span> is a constant and <span class="math inline">\(\frac{T_c^*(t)}{m(t)} = \frac{\Gamma^*(t)}{m(t)} \hat{n}\)</span>, letting <span class="math inline">\(\hat{n} = \frac{\lambda_2}{||\lambda_2||}\)</span> which is a constant, is always pointing in the direction of <span class="math inline">\(\hat{n}\)</span>. The <span class="math inline">\(\frac{T_c^*(t)}{m(t)}\)</span> component will therefore only affect velocity in the <span class="math inline">\(\hat{n}\)</span> direction. Therefore <span class="math inline">\(\dot{r}(t) = g t + \beta(t) \hat{n} + \dot{r}_0\)</span><a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>
+and so <span class="math inline">\(\dot{r}(t_f) = g t_f + \beta_2 \hat{n} + \dot{r}_0 = 0\)</span>. Integrating <span class="math inline">\(\dot{r}(t)\)</span> we get <span class="math inline">\(r(t) = r_0 + \dot{r}_0 t + g \frac{t^2}{2} + B(t) \hat{n}\)</span>.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>
 So <span class="math inline">\(r(t_f) = r_0 + \dot{r}_0 t_f + g \frac{t_f^2}{2} + \beta_1 \hat{n} = 0\)</span>.</p>
 <p>Recall <span class="math inline">\(g^T T_c^* = 0\)</span> and <span class="math inline">\(T_c^* = \Gamma^* \hat{n}\)</span> so <span class="math inline">\(g^T \hat{n} = 0\)</span>. Then
 <span class="math display">\[\begin{align*}
@@ -290,11 +311,14 @@ remember <span class="math inline">\(r_{0_1} = -\frac{g^T}{||g||} r_0\)</span>.<
 \end{align*}\]</span>
 Recall we assumed <span class="math inline">\(r_{0_1} &gt; 0\)</span> in <a href="#eq:6">(6)</a>, which leads to a contradiction.
 Therefore, <span class="math inline">\(R_{12}(t) \neq 0 \; \forall \; t \in [0, t_f]\)</span> when <span class="math inline">\(\lambda_1 = 0\)</span> and so <span class="math inline">\(R_{12}(t) \neq 0\)</span> a.e. on <span class="math inline">\([0, t_f^*]\)</span>.</p>
-<p>The proof of Lemma <a href="#lem:one">1</a> is thus complete. Lemma <a href="#lem:one">1</a> implies that main nonconvex constraint on the thrust magnitude <a href="#eq:3">(3)</a> in <a href="#problem-1">Problem 1</a> is convexified by replacing it with <a href="#eq:14">(13)</a> and <a href="#eq:15">(14)</a> in Problem 2 via the introduction of a slack variable <span class="math inline">\(\Gamma\)</span>. Furthemore, Lemma <a href="#lem:one">1</a> states that if there exists and optimal solution for <a href="#problem-2">Problem 2</a>, then there also exist one for <a href="#problem-1">Problem 1</a> and it can be obtained directly from the optimal solution of <a href="#problem-2">Problem 2</a>.</p>
-<p>To add the start/end thrust direction constraints <a href="#eq:12">(11)</a> to <a href="#problem-2">Problem 2</a> we use <a href="#eq:22">(21)</a> to get the constraints
+<p>The proof of Lemma <a href="#lem:one">1</a> is thus complete. Lemma <a href="#lem:one">1</a> implies that main nonconvex constraint on the thrust magnitude <a href="#eq:3">(3)</a> in <a href="#problem-1">Problem 1</a> is convexified by replacing it with <a href="#eq:14">(14)</a> and <a href="#eq:15">(15)</a> in Problem 2 via the introduction of a slack variable <span class="math inline">\(\Gamma\)</span>. Furthemore, Lemma <a href="#lem:one">1</a> states that if there exists and optimal solution for <a href="#problem-2">Problem 2</a>, then there also exist one for <a href="#problem-1">Problem 1</a> and it can be obtained directly from the optimal solution of <a href="#problem-2">Problem 2</a>.</p>
+<p>To add the start/end thrust direction constraints <a href="#eq:12">(12)</a> to <a href="#problem-2">Problem 2</a> we use <a href="#eq:22">(22)</a> to get the constraints
 <span class="math display" id="eq:23">\[\begin{align*}
-  T_c(0) = \Gamma(0) \hat{n}_0, \hspace{1cm} T_c(t_f) = \Gamma(t_f) \hat{n}_f \tag{22}
+  T_c(0) = \Gamma(0) \hat{n}_0, \hspace{1cm} T_c(t_f) = \Gamma(t_f) \hat{n}_f \tag{23}
 \end{align*}\]</span></p>
+</div>
+<div id="existence-of-an-optimal-solution" class="section level2">
+<h2>Existence of an Optimal solution</h2>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
@@ -314,20 +338,21 @@ Blackmore, Lars, Behçet Açikmeşe, and Daniel P Scharf. 2010. <span>“Minimum
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>I’ll have a post explaining the Hamiltonian and Pontryagin’s principle up soon<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p><a href="https://math.stackexchange.com/questions/191268/absolutely-continuous-functions" class="uri">https://math.stackexchange.com/questions/191268/absolutely-continuous-functions</a> seems like a nice description of what an absolutely continouous function is<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Check out comments of answer at <a href="https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors" class="uri">https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors</a> to see why <span class="math inline">\(\frac{d}{d x_2} \lambda_1^T x_2 = \lambda_1\)</span><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>You may note that <span class="math inline">\(x(t_f)\)</span> can be anything as long as it is a point <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>note <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> have three elements (<span class="math inline">\(\lambda_{1, 2} \in \mathbb{R}^3\)</span>) whilst <span class="math inline">\(\lambda_3\)</span> only has one (<span class="math inline">\(\lambda_3 \in \mathbb{R}\)</span>)<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p>The start/end constraints determine <span class="math inline">\(\theta\)</span><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p><span class="math inline">\(\cos \theta = 1\)</span> except when start/end constraints are binding<a href="#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p><span class="math display">\[\begin{align*}
+<li id="fn1"><p>such that the corresponding state trajectory satisfies <span class="math inline">\(x^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)\)</span><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> (<span class="math inline">\(X\)</span> here enforces all three state constraints, so <span class="math inline">\(X = \{x \in \mathbb{R}^6: ||Sx|| + c^T x \leq 0 \text{ and } || \dot{r}(t) || \leq \hat{V} \}\)</span>). I’ve tried to incorporate the velocity constraint idk if this right <!-- As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary. Actually we have $r_1(t) \geq 0$. --><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>I’ll have a post explaining the Hamiltonian and Pontryagin’s principle up soon<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://math.stackexchange.com/questions/191268/absolutely-continuous-functions" class="uri">https://math.stackexchange.com/questions/191268/absolutely-continuous-functions</a> seems like a nice description of what an absolutely continouous function is<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Check out comments of answer at <a href="https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors" class="uri">https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors</a> to see why <span class="math inline">\(\frac{d}{d x_2} \lambda_1^T x_2 = \lambda_1\)</span><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>You may note that <span class="math inline">\(x(t_f)\)</span> can be anything as long as it is a point <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>note <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> have three elements (<span class="math inline">\(\lambda_{1, 2} \in \mathbb{R}^3\)</span>) whilst <span class="math inline">\(\lambda_3\)</span> only has one (<span class="math inline">\(\lambda_3 \in \mathbb{R}\)</span>)<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>The start/end constraints determine <span class="math inline">\(\theta\)</span><a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p><span class="math inline">\(\cos \theta = 1\)</span> except when start/end constraints are binding<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p><span class="math display">\[\begin{align*}
   \text{let } \lambda_2(t) &amp;= [f_1(t), f_2(t) \ldots f_n(t)] \\
   \frac{d ||\lambda_2||}{d t} &amp;= \frac{d }{d t} \sqrt{\sum f_i(t)^2 } \\
   &amp;= \frac{1}{2} \frac{1}{||\lambda_2||} ( 2 f_1(t) \dot{f}_1(t) + 2 f_2(t) \dot{f}_2(t) + \dots + 2 f_n(t) \dot{f}_n(t) ) \\
   &amp;= \frac{\lambda_2^T}{||\lambda_2||} \dot{\lambda}_2
-\end{align*}\]</span> Where has the half come from?????<a href="#fnref8" class="footnote-back">↩︎</a></p></li>
-<li id="fn9"><p>
+\end{align*}\]</span> Where has the half come from?????<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>
 <span class="math display">\[\begin{align*}
   \dot{r}(t) - \dot{r}_0 &amp;= g (t - 0) + \int_{0}^{t} \frac{\Gamma^*(s)}{m(s)} \hat{n} \,ds\\
   \text{remember }\dot{m} &amp;= - \alpha \Gamma(t) \\
@@ -335,11 +360,11 @@ Blackmore, Lars, Behçet Açikmeşe, and Daniel P Scharf. 2010. <span>“Minimum
   &amp;= g t - \frac{\hat{n}}{\alpha}  \int_{0}^{t} \frac{\dot{m}(s)}{m(s)} \,ds \\
   &amp;= g t - \frac{\hat{n}}{\alpha}  \ln \frac{m(t)}{m(0)}
 \end{align*}\]</span>
-You will notice this is the same as the rocket equation (<a href="https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based" class="uri">https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based</a>) with <span class="math inline">\(R(t) = -\alpha \Gamma(t)\)</span> and <span class="math inline">\(v_e = \frac{1}{\alpha}\)</span>.<a href="#fnref9" class="footnote-back">↩︎</a></p></li>
-<li id="fn10"><p>
+You will notice this is the same as the rocket equation (<a href="https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based" class="uri">https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based</a>) with <span class="math inline">\(R(t) = -\alpha \Gamma(t)\)</span> and <span class="math inline">\(v_e = \frac{1}{\alpha}\)</span>.<a href="#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>
 <span class="math display">\[\begin{align*}
     r(t) - r_0 = \dot{r}_0 (t - 0) + g \frac{(t - 0)^2}{2} + \frac{\hat{n}}{\alpha} 
   \end{align*}\]</span>
-idk<a href="#fnref10" class="footnote-back">↩︎</a></p></li>
+idk<a href="#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
