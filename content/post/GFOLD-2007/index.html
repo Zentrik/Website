@@ -319,6 +319,29 @@ Therefore, <span class="math inline">\(R_{12}(t) \neq 0 \; \forall \; t \in [0, 
 </div>
 <div id="existence-of-an-optimal-solution" class="section level2">
 <h2>Existence of an Optimal solution</h2>
+<p>Now before we try to solve <a href="#problem-2">Problem 2</a> to obtain an optimal solution, we have to first make sure that an optimal solution exists.</p>
+<div class="theorem">
+<p><span id="thm:one" class="theorem"><strong>Theorem 1  </strong></span>Consider the following optimal control problem:
+<span class="math display">\[\begin{gather*}
+  \min_{v(\bullet)} J(y(\bullet), u(\bullet), t_f) = \int_{0}^{t_f} g(y(t), u(t)) \,dt \\
+  \text{subject to $\dot{y}(t) = f(y(t), v(t))$} \\ \\
+  y(t) \in \mathcal{Y} \quad \text{ and } \quad v(t) \in \mathcal{V} \; \forall \; t \in [0, t_f] \\
+  y(0) \in B_0 \quad \text{ and } \quad y(t_f) \in B_f
+\end{gather*}\]</span>
+There are 5 conditions that need to be satisfied for an optimal solution to exist, if there exist feasible state trajectories and control signals:</p>
+<ol style="list-style-type: decimal">
+<li>There exists a compact set <span class="math inline">\(\mathcal{R}\)</span> such that all feasible state trajectories satisfy <span class="math inline">\([t, y(t)] \in \mathcal{R}\)</span> for all <span class="math inline">\(t \in [0, t_f]\)</span></li>
+<li>The set of all feasible <span class="math inline">\([y(0), t_f, y(t_f)]\)</span>, such that <span class="math inline">\(y(0) \in B_0\)</span> and <span class="math inline">\(y(t_f) \in B_f\)</span>, is closed</li>
+<li>The set <span class="math inline">\(\mathcal{V}\)</span> is compact</li>
+<li><span class="math inline">\([g, f^T]^T\)</span> is a continuous function for <span class="math inline">\(y \in \mathcal{Y}\)</span> and <span class="math inline">\(v \in \mathcal{V}\)</span></li>
+<li>for each <span class="math inline">\((t, y) \in \mathcal{R}\)</span>, <span class="math inline">\(Q^+(t, y)\)</span> is convex, where
+<span class="math display" id="eq:24">\[\begin{align*}
+  Q^+(y) = \{ (z_1, z_2): z_1 \geq g(y, v), z_2 = f(y, v), v \in \mathcal{V} \} \tag{24}
+\end{align*}\]</span></li>
+</ol>
+</div>
+<p>Now usually with Pontryagin’s principle we will want to solve for the optimal control by maximising the Hamiltonian. However, this requires us to know the value of <span class="math inline">\(\lambda\)</span> and unfortunately we don’t have enough boundary conditions on <span class="math inline">\(\lambda\)</span> to work it out. <span class="math inline">\(\lambda_1(t^*_f)\)</span> is not in <span class="math inline">\(H(\psi(t^*_f))\)</span> as <span class="math inline">\(\dot{r}(t_f^*) = 0\)</span>, so we can’t work out <span class="math inline">\(\lambda_1(t^*_f)\)</span>.</p>
+<p>Instead the paper formulates the problem as a SOCP.</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">

@@ -370,6 +370,33 @@ To add the start/end thrust direction constraints \@ref(eq:12) to [Problem 2] we
  
 ## Existence of an Optimal solution
 
+Now before we try to solve [Problem 2] to obtain an optimal solution, we have to first make sure that an optimal solution exists.
 
+:::{.theorem #one}
+Consider the following optimal control problem: 
+\begin{gather*}
+  \min_{v(\bullet)} J(y(\bullet), u(\bullet), t_f) = \int_{0}^{t_f} g(y(t), u(t)) \,dt \\
+  \text{subject to $\dot{y}(t) = f(y(t), v(t))$} \\ \\
+  y(t) \in \mathcal{Y} \quad \text{ and } \quad v(t) \in \mathcal{V} \; \forall \; t \in [0, t_f] \\
+  y(0) \in B_0 \quad \text{ and } \quad y(t_f) \in B_f
+\end{gather*} 
+There are 5 conditions that need to be satisfied for an optimal solution to exist, if there exist feasible state trajectories and control signals:
+
+1. There exists a compact set $\mathcal{R}$ such that all feasible state trajectories satisfy $[t, y(t)] \in \mathcal{R}$ for all $t \in [0, t_f]$
+2. The set of all feasible $[y(0), t_f, y(t_f)]$, such that $y(0) \in B_0$ and $y(t_f) \in B_f$, is closed
+3. The set $\mathcal{V}$ is compact
+4. $[g, f^T]^T$ is a continuous function for $y \in \mathcal{Y}$ and $v \in \mathcal{V}$
+5. for each $(t, y) \in \mathcal{R}$, $Q^+(t, y)$ is convex, where 
+\begin{align*}
+  Q^+(y) = \{ (z_1, z_2): z_1 \geq g(y, v), z_2 = f(y, v), v \in \mathcal{V} \} (\#eq:24)
+\end{align*} 
+:::
+
+
+
+
+Now usually with Pontryagin's principle we will want to solve for the optimal control by maximising the Hamiltonian. However, this requires us to know the value of $\lambda$ and unfortunately we don't have enough boundary conditions on $\lambda$ to work it out. $\lambda_1(t^*_f)$ is not in $H(\psi(t^*_f))$ as $\dot{r}(t_f^*) = 0$, so we can't work out $\lambda_1(t^*_f)$.
+
+Instead the paper formulates the problem as a SOCP.
 
 # References
