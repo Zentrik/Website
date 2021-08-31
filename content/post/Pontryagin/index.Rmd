@@ -29,6 +29,44 @@ output:
     toc: true
 ---
 
+Calculus of Variations and Optimal Control Theory A Concise Introduction by Daniel Liberzon
+
+# Simple Problem
+Fixed or free time?
+Let's say our problem is 
+\begin{align*}
+  \max \Psi(x(T)) \\
+  s.t. \ \dot{x} = f(x, u), \ u \in U
+\end{align*}
+If we have trajectories $(x_\epsilon, u_\epsilon)$ which are a variation of the optimal trajectories $(x^*, u^*)$ with $\epsilon \geq 0$ and \begin{align*}
+  \lim_{\epsilon \to 0^+} (x_\epsilon, u_\epsilon) = (x^*, u^*)
+\end{align*} 
+Now, we know a small increase in $\epsilon$ at $\epsilon=0$ must decrease the objective function. Therefore
+\begin{align*}
+  0 \geq \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} \Psi(x_\epsilon(T)) = \nabla \Psi(x^*(T)) \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(T)
+\end{align*} 
+Let $p(T) = \nabla \Psi(x^*(T))$ and $v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)$. So $p(T) v(T) \leq 0$
+
+We want to show $pf(x^*, u^*) \leq pf(x^*, u)$ for all $u \in U$ and $t \in [0, T]$. If we construct $v(T) = f(x^*, u^*) - f(x^*, u)$ then we have show the statement to be true when $t = T$. Additionally if we can show $p(t)v(t)$ has the same sign for all $t \in [0, T]$ then we have proved the statement.
+
+It turns out we can use a type of variation called a needle variation which is 
+\begin{align*}
+  u_\epsilon = \begin{cases}
+    \omega & \text{if } t \in [\tau - \epsilon, \tau] \\
+    u^*(t) & \text{else}
+  \end{cases} 
+\end{align*} 
+After $\tau$ we are using $u^*(t)$ ...
+This gives us $x_\epsilon(\tau)$
+
+We can make $p(t)$ adjoint to $v(t)$, so $p(t)v(t)$ is a constant. This proves the statement and shows that the Hamiltonian is constant?
+
+# TLDR
+
+If we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name $\lambda$. 
+
+As reachable set may vary with time, the seperating hyperlane and $\lambda$ may vary with time.
+
 Lagrange problem, minimising $\int_{t_0}^{t_1} g(x, u, t) \,dt$
 
 Bolza problem, minising $h(x(t_1)) + \int_{t_0}^{t_1} g(x, u, t) \,dt$
@@ -136,7 +174,14 @@ $K_t$ is a convex cone so it includes the origin. So $\lambda(\tau) \cdot v = 0$
 
 (6.2) $\xi_*^0(t_1)$ has to be the minimum value it can be for $\xi_*(t_1)$ in the reachable set, otherwise it couldn't be the optimal solution as it doesn't minimise the cost. Therefore, $\hat{\xi}$ has to lie on the boundary of the reachable set of the extended set.
 
-(6.3) $(-1, 0)$ cannot lie in the interior of $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$, as it is a cone so if $(-1, 0)$ lies in the cone that would imply that the reachable set includes points with a lower $\xi^0(t_1)$ value and $\xi(t_1)$ which contradicts (6.2). Therefore, there exists a hyperplane $\hat{P}(t_1)$ such that $(-1, 0)$ is contained in one of the closed half-spaces defined by $\hat{P}(t_1)$ and $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$ is contained in the other closed half-space. We take $\hat{\lambda}_*(t_1)$ to be a vector orthorgonal to $\hat{P}(t_1)$ and contained in the the half-space containing $(-1, 0)$. Then $\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0$ as both are in the same halfspace and $\hat{\lambda}_*(t_1) \cdot \hat{v} \leq 0, \hspace{0.5cm} \hat{v} \in \hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$. $\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0 \implies \hat{\lambda}_*(t_1) \leq 0$. We then define $\hat{\lambda}_*$ to be the adjoint response equal to $\hat{\lambda}_*(t_1)$ at time $t_1$. From  the  equations  for  the  adjoint  response  we  immediately  have $\dot{\lambda}_*^0(t) = 0$ (since $\hat{f}$ is independent of $x^0$) and so $\lambda_*^0$ is constant and nonpositive. If $\lambda_*^0 \neq 0$ then we can define $\lambda_*^0(t_1) = -1$ (as the $\lambda$ can be scaled whilst still being orthogonal and in the same closed half-space) and so $\lambda_*^0 = -1$. Alternatively divide $\Lambda$ by $\lambda^0$ and the differential equation will still be satisfied.
+(6.3) $(-1, 0)$ cannot lie in the interior of $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$, as it is a cone so if $(-1, 0)$ lies in the cone that would imply that the reachable set includes points with a lower $\xi^0(t_1)$ value and $\xi(t_1)$ which contradicts (6.2).
+Therefore, there exists a hyperplane $\hat{P}(t_1)$ such that $(-1, 0)$ is contained in one of the closed half-spaces defined by $\hat{P}(t_1)$ and $\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$ is contained in the other closed half-space. 
+We take $\hat{\lambda}_*(t_1)$ to be a vector orthorgonal to $\hat{P}(t_1)$ and contained in the the half-space containing $(-1, 0)$. 
+Then $\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0$ as both are in the same halfspace and $\hat{\lambda}_*(t_1) \cdot \hat{v} \leq 0, \hspace{0.5cm} \hat{v} \in \hat{K}(\mu_*, \hat{x}_0, t_0, t_1)$. 
+$\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0 \implies \lambda^0_*(t_1) \leq 0$. 
+We then define $\hat{\lambda}_*$ to be the adjoint response equal to $\hat{\lambda}_*(t_1)$ at time $t_1$. 
+From  the  equations  for  the  adjoint  response  we  immediately  have $\dot{\lambda}_*^0(t) = 0$ (since $\hat{f}$ is independent of $x^0$) and so $\lambda_*^0$ is constant and nonpositive. 
+If $\lambda_*^0 \neq 0$ then we can define $\lambda_*^0(t_1) = -1$ (as the $\lambda$ can be scaled whilst still being orthogonal and in the same closed half-space) and so $\lambda_*^0 = -1$.
 
 The theorem then follows from lemmata 5.13 and 5.15.
 
@@ -191,7 +236,7 @@ I will be using the same notation as used in the previous section. $e(\phi) = (t
 If $(t_0, x_0)$ are fixed and we have a n-dimensional manifold $\mathcal{T}_1$. And if the trajectory $\xi$ is not tangent to $\mathcal{T}_1$ at $(t_1, \xi(t_1))$ then $\lambda^0 \neq 0$
 
 6.3.30
-a) If $\lambda \neq 0$ let $\boldsymbol \lambda^0 = -1$, $\boldsymbol \lambda = \frac{\lambda}{|\lambda^0|}$ and so $\boldsymbol H = \frac{H}{|\lambda^0|} = \hat{\boldsymbol \lambda} \cdot f$. $\dot{\boldsymbol \lambda} = - \frac{1}{|\lambda^0|} \nabla_\xi H = - \nabla_\xi \boldsymbol H$
+a) If $\lambda \neq 0$ let $\boldsymbol \lambda^0 = -1$, $\boldsymbol \lambda = \frac{\lambda}{|\lambda^0|}$ and so $\boldsymbol H = \frac{H}{|\lambda^0|} = \hat{\boldsymbol \lambda} \cdot f$. $\dot{\boldsymbol \lambda} = - \frac{1}{|\lambda^0|} \nabla_\xi H = - \nabla_\xi \boldsymbol H$. Also $\max H = \max \boldsymbol H$, as $\boldsymbol H$ is a positive scalar multiple of $H$.
 
 b) Let $\mathcal{T}_0$ be a point and $\mathcal{T}_1$ be a n-dimensional manifold of class C^(1) (the set of all differentiable functions with a continouous first derivative). If an extremal trajectory is not tangent to $\mathcal{T}_1$ then $\lambda^0 \neq 0$. WHY? 
 

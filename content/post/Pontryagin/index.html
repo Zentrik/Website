@@ -33,6 +33,8 @@ output:
 
 <div id="TOC">
 <ul>
+<li><a href="#simple-problem">Simple Problem</a></li>
+<li><a href="#tldr">TLDR</a></li>
 <li><a href="#proof-summary">Proof Summary</a>
 <ul>
 <li><a href="#transversality-conditions">Transversality conditions</a></li>
@@ -41,6 +43,39 @@ output:
 </ul>
 </div>
 
+<p>Calculus of Variations and Optimal Control Theory A Concise Introduction by Daniel Liberzon</p>
+<div id="simple-problem" class="section level1">
+<h1>Simple Problem</h1>
+<p>Fixed or free time?
+Let’s say our problem is
+<span class="math display">\[\begin{align*}
+  \max \Psi(x(T)) \\
+  s.t. \ \dot{x} = f(x, u), \ u \in U
+\end{align*}\]</span>
+If we have trajectories <span class="math inline">\((x_\epsilon, u_\epsilon)\)</span> which are a variation of the optimal trajectories <span class="math inline">\((x^*, u^*)\)</span> with <span class="math inline">\(\epsilon \geq 0\)</span> and <span class="math display">\[\begin{align*}
+  \lim_{\epsilon \to 0^+} (x_\epsilon, u_\epsilon) = (x^*, u^*)
+\end{align*}\]</span>
+Now, we know a small increase in <span class="math inline">\(\epsilon\)</span> at <span class="math inline">\(\epsilon=0\)</span> must decrease the objective function. Therefore
+<span class="math display">\[\begin{align*}
+  0 \geq \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} \Psi(x_\epsilon(T)) = \nabla \Psi(x^*(T)) \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(T)
+\end{align*}\]</span>
+Let <span class="math inline">\(p(T) = \nabla \Psi(x^*(T))\)</span> and <span class="math inline">\(v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)\)</span>. So <span class="math inline">\(p(T) v(T) \leq 0\)</span></p>
+<p>We want to show <span class="math inline">\(pf(x^*, u^*) \leq pf(x^*, u)\)</span> for all <span class="math inline">\(u \in U\)</span> and <span class="math inline">\(t \in [0, T]\)</span>. If we construct <span class="math inline">\(v(T) = f(x^*, u^*) - f(x^*, u)\)</span> then we have show the statement to be true when <span class="math inline">\(t = T\)</span>. Additionally if we can show <span class="math inline">\(p(t)v(t)\)</span> has the same sign for all <span class="math inline">\(t \in [0, T]\)</span> then we have proved the statement.</p>
+<p>It turns out we can use a type of variation called a needle variation which is
+<span class="math display">\[\begin{align*}
+  u_\epsilon = \begin{cases}
+    \omega &amp; \text{if } t \in [\tau - \epsilon, \tau] \\
+    u^*(t) &amp; \text{else}
+  \end{cases} 
+\end{align*}\]</span>
+After <span class="math inline">\(\tau\)</span> we are using <span class="math inline">\(u^*(t)\)</span> …
+This gives us <span class="math inline">\(x_\epsilon(\tau)\)</span></p>
+<p>We can make <span class="math inline">\(p(t)\)</span> adjoint to <span class="math inline">\(v(t)\)</span>, so <span class="math inline">\(p(t)v(t)\)</span> is a constant. This proves the statement and shows that the Hamiltonian is constant?</p>
+</div>
+<div id="tldr" class="section level1">
+<h1>TLDR</h1>
+<p>If we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name <span class="math inline">\(\lambda\)</span>.</p>
+<p>As reachable set may vary with time, the seperating hyperlane and <span class="math inline">\(\lambda\)</span> may vary with time.</p>
 <p>Lagrange problem, minimising <span class="math inline">\(\int_{t_0}^{t_1} g(x, u, t) \,dt\)</span></p>
 <p>Bolza problem, minising <span class="math inline">\(h(x(t_1)) + \int_{t_0}^{t_1} g(x, u, t) \,dt\)</span></p>
 <p>Mayer problem, minising <span class="math inline">\(h(x(t_1))\)</span></p>
@@ -60,6 +95,7 @@ Then <span class="math inline">\(H(x, u, \lambda) = \lambda^T f(x, u)\)</span>, 
 <p><span class="math inline">\(\lambda_0\)</span> = 0 is an abnormal problem, implying the system is not controllable/ the normality condition is not satified/ fixed time, but non fixed final state will never be abnormal? For linear control systems All trajectories for uncontrollable systems are possibly abnormal extremals 
 if <span class="math inline">\(\lambda_0 \neq 0\)</span> then we can simply divide by <span class="math inline">\(\lambda_0\)</span> and the resulting hamiltonian will be our standard form.<br />
 </p>
+</div>
 <div id="proof-summary" class="section level1">
 <h1>Proof Summary</h1>
 <p>I will be using <span class="math inline">\(\cdot\)</span> instead of <span class="math inline">\(\langle \rangle\)</span></p>
@@ -108,7 +144,14 @@ We let <span class="math inline">\(l_\theta = 1 \ \therefore \ v_\theta = f\left
 <p>(5.16) If <span class="math inline">\(ξ(μ^∗,x_0,t_0,t_1) ∈ bd(\mathcal{R}(x_0,t_0,t_1))\)</span> then there is a hyperplane <span class="math inline">\(P(t_1)\)</span> seperating <span class="math inline">\(v_0\)</span> and <span class="math inline">\(K(\mu, x_0, t_0, t_1)\)</span>. If we let <span class="math inline">\(\lambda_*(t_1)\)</span> be orthogonal to <span class="math inline">\(P(t_1)\)</span> and contained in a half-space not containing <span class="math inline">\(K(\mu, x_0, t_0, t_1)\)</span> and let it be the adjoint response taking <span class="math inline">\(\lambda_*(t_1)\)</span> at time <span class="math inline">\(t_1\)</span> then lemmata 5.13 and 5.15 follows. So pointwise maximum is satisfied.</p>
 <p>(5.17) Trajectories in the interior of the fixed time reachable setremain in the interior</p>
 <p>(6.2) <span class="math inline">\(\xi_*^0(t_1)\)</span> has to be the minimum value it can be for <span class="math inline">\(\xi_*(t_1)\)</span> in the reachable set, otherwise it couldn’t be the optimal solution as it doesn’t minimise the cost. Therefore, <span class="math inline">\(\hat{\xi}\)</span> has to lie on the boundary of the reachable set of the extended set.</p>
-<p>(6.3) <span class="math inline">\((-1, 0)\)</span> cannot lie in the interior of <span class="math inline">\(\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span>, as it is a cone so if <span class="math inline">\((-1, 0)\)</span> lies in the cone that would imply that the reachable set includes points with a lower <span class="math inline">\(\xi^0(t_1)\)</span> value and <span class="math inline">\(\xi(t_1)\)</span> which contradicts (6.2). Therefore, there exists a hyperplane <span class="math inline">\(\hat{P}(t_1)\)</span> such that <span class="math inline">\((-1, 0)\)</span> is contained in one of the closed half-spaces defined by <span class="math inline">\(\hat{P}(t_1)\)</span> and <span class="math inline">\(\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span> is contained in the other closed half-space. We take <span class="math inline">\(\hat{\lambda}_*(t_1)\)</span> to be a vector orthorgonal to <span class="math inline">\(\hat{P}(t_1)\)</span> and contained in the the half-space containing <span class="math inline">\((-1, 0)\)</span>. Then <span class="math inline">\(\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0\)</span> as both are in the same halfspace and <span class="math inline">\(\hat{\lambda}_*(t_1) \cdot \hat{v} \leq 0, \hspace{0.5cm} \hat{v} \in \hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span>. <span class="math inline">\(\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0 \implies \hat{\lambda}_*(t_1) \leq 0\)</span>. We then define <span class="math inline">\(\hat{\lambda}_*\)</span> to be the adjoint response equal to <span class="math inline">\(\hat{\lambda}_*(t_1)\)</span> at time <span class="math inline">\(t_1\)</span>. From the equations for the adjoint response we immediately have <span class="math inline">\(\dot{\lambda}_*^0(t) = 0\)</span> (since <span class="math inline">\(\hat{f}\)</span> is independent of <span class="math inline">\(x^0\)</span>) and so <span class="math inline">\(\lambda_*^0\)</span> is constant and nonpositive. If <span class="math inline">\(\lambda_*^0 \neq 0\)</span> then we can define <span class="math inline">\(\lambda_*^0(t_1) = -1\)</span> (as the <span class="math inline">\(\lambda\)</span> can be scaled whilst still being orthogonal and in the same closed half-space) and so <span class="math inline">\(\lambda_*^0 = -1\)</span>. Alternatively divide <span class="math inline">\(\Lambda\)</span> by <span class="math inline">\(\lambda^0\)</span> and the differential equation will still be satisfied.</p>
+<p>(6.3) <span class="math inline">\((-1, 0)\)</span> cannot lie in the interior of <span class="math inline">\(\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span>, as it is a cone so if <span class="math inline">\((-1, 0)\)</span> lies in the cone that would imply that the reachable set includes points with a lower <span class="math inline">\(\xi^0(t_1)\)</span> value and <span class="math inline">\(\xi(t_1)\)</span> which contradicts (6.2).
+Therefore, there exists a hyperplane <span class="math inline">\(\hat{P}(t_1)\)</span> such that <span class="math inline">\((-1, 0)\)</span> is contained in one of the closed half-spaces defined by <span class="math inline">\(\hat{P}(t_1)\)</span> and <span class="math inline">\(\hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span> is contained in the other closed half-space.
+We take <span class="math inline">\(\hat{\lambda}_*(t_1)\)</span> to be a vector orthorgonal to <span class="math inline">\(\hat{P}(t_1)\)</span> and contained in the the half-space containing <span class="math inline">\((-1, 0)\)</span>.
+Then <span class="math inline">\(\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0\)</span> as both are in the same halfspace and <span class="math inline">\(\hat{\lambda}_*(t_1) \cdot \hat{v} \leq 0, \hspace{0.5cm} \hat{v} \in \hat{K}(\mu_*, \hat{x}_0, t_0, t_1)\)</span>.
+<span class="math inline">\(\hat{\lambda}_*(t_1) \cdot (-1, 0) \geq 0 \implies \lambda^0_*(t_1) \leq 0\)</span>.
+We then define <span class="math inline">\(\hat{\lambda}_*\)</span> to be the adjoint response equal to <span class="math inline">\(\hat{\lambda}_*(t_1)\)</span> at time <span class="math inline">\(t_1\)</span>.
+From the equations for the adjoint response we immediately have <span class="math inline">\(\dot{\lambda}_*^0(t) = 0\)</span> (since <span class="math inline">\(\hat{f}\)</span> is independent of <span class="math inline">\(x^0\)</span>) and so <span class="math inline">\(\lambda_*^0\)</span> is constant and nonpositive.
+If <span class="math inline">\(\lambda_*^0 \neq 0\)</span> then we can define <span class="math inline">\(\lambda_*^0(t_1) = -1\)</span> (as the <span class="math inline">\(\lambda\)</span> can be scaled whilst still being orthogonal and in the same closed half-space) and so <span class="math inline">\(\lambda_*^0 = -1\)</span>.</p>
 <p>The theorem then follows from lemmata 5.13 and 5.15.</p>
 <p>WHY <span class="math inline">\(\lambda_0 \neq 0\)</span> for every <span class="math inline">\(t \in [t_0, t_1]\)</span> IDK. <span class="math inline">\(\lambda \neq 0\)</span> as it is orthogonal to hyperlane, <span class="math inline">\(\therefore\)</span> cannot be <span class="math inline">\(\boldsymbol 0\)</span></p>
 <p>(6.4) If control is bounded then Hamiltonian is a constant wrt time.</p>
@@ -139,7 +182,7 @@ As <span class="math inline">\(\hat{T}_{\hat{\xi}(t_1)} S_1 \subset T^+_{\hat{\x
 <p>I will be using the same notation as used in the previous section. <span class="math inline">\(e(\phi) = (t_0, \xi(0), t_1, \xi(t_1))\)</span>, the set <span class="math inline">\(\mathcal{B}\)</span> of points <span class="math inline">\(e(\phi)\)</span> in <span class="math inline">\(\mathbb{R}^{2n + 2}\)</span>. <span class="math inline">\(\mathcal{B} = \{ (t_0, \xi_0, t_1, \xi_1) : (t_0, \xi_0) \in \mathcal{T}_0, \ (t_1, \xi_1) \in \mathcal{T}_1 \}\)</span>.  is similar to S in previous section but also includes constraint on the time.</p>
 <p>If <span class="math inline">\((t_0, x_0)\)</span> are fixed and we have a n-dimensional manifold <span class="math inline">\(\mathcal{T}_1\)</span>. And if the trajectory <span class="math inline">\(\xi\)</span> is not tangent to <span class="math inline">\(\mathcal{T}_1\)</span> at <span class="math inline">\((t_1, \xi(t_1))\)</span> then <span class="math inline">\(\lambda^0 \neq 0\)</span></p>
 <p>6.3.30
-a) If <span class="math inline">\(\lambda \neq 0\)</span> let <span class="math inline">\(\boldsymbol \lambda^0 = -1\)</span>, <span class="math inline">\(\boldsymbol \lambda = \frac{\lambda}{|\lambda^0|}\)</span> and so <span class="math inline">\(\boldsymbol H = \frac{H}{|\lambda^0|} = \hat{\boldsymbol \lambda} \cdot f\)</span>. <span class="math inline">\(\dot{\boldsymbol \lambda} = - \frac{1}{|\lambda^0|} \nabla_\xi H = - \nabla_\xi \boldsymbol H\)</span></p>
+a) If <span class="math inline">\(\lambda \neq 0\)</span> let <span class="math inline">\(\boldsymbol \lambda^0 = -1\)</span>, <span class="math inline">\(\boldsymbol \lambda = \frac{\lambda}{|\lambda^0|}\)</span> and so <span class="math inline">\(\boldsymbol H = \frac{H}{|\lambda^0|} = \hat{\boldsymbol \lambda} \cdot f\)</span>. <span class="math inline">\(\dot{\boldsymbol \lambda} = - \frac{1}{|\lambda^0|} \nabla_\xi H = - \nabla_\xi \boldsymbol H\)</span>. Also <span class="math inline">\(\max H = \max \boldsymbol H\)</span>, as <span class="math inline">\(\boldsymbol H\)</span> is a positive scalar multiple of <span class="math inline">\(H\)</span>.</p>
 <ol start="2" style="list-style-type: lower-alpha">
 <li>Let <span class="math inline">\(\mathcal{T}_0\)</span> be a point and <span class="math inline">\(\mathcal{T}_1\)</span> be a n-dimensional manifold of class C^(1) (the set of all differentiable functions with a continouous first derivative). If an extremal trajectory is not tangent to <span class="math inline">\(\mathcal{T}_1\)</span> then <span class="math inline">\(\lambda^0 \neq 0\)</span>. WHY?</li>
 </ol>

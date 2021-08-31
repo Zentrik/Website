@@ -109,8 +109,8 @@ The second constraint is a bound on the velocity
 \end{align*}
 The last constraint is a "glide slope" constraint ($\theta_{alt}$ is given)
 \begin{align*}
-  \theta_{alt} = \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
-  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq r_1(t) \tan \tilde{\theta}_{alt}
+  \theta_{alt} = \arctan \left( \frac{r_1(t)}{\sqrt{r_2(t)^2 + r_3(t)^2}} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq \frac{r_1(t)}{\tan \tilde{\theta}_{alt}}
 \end{align*} 
 which can be written using the following form of \@ref(eq:8) 
 \begin{align*}
@@ -123,12 +123,12 @@ where
   0 & 0 & 1 & 0 & 0 & 0
   \end{bmatrix}, \hspace{1cm}
   c = \begin{bmatrix}
-  -\tan \tilde{\theta}_{alt} & 0 & 0 & 0 & 0 & 0
+  -\frac{1}{\tan \tilde{\theta}_{alt}} & 0 & 0 & 0 & 0 & 0
   \end{bmatrix}^T
 \end{align*}
 The "glide slope" constraint also enforces $r_1(t) \geq 0$, if $r_1(t) < 0$ then $c^T x \geq 0$ and so $||Sx|| \leq 0$ so $x = 0$ and $r_1(t) = 0$ which is a contradiction.
 
-In @bla2010 
+FIX glideslope. It simply is measuring another angle as other papers. it is measuring angle from vertical to rocket, so 90 - what is in later papers.
 
 ### Problem 1
 
@@ -186,8 +186,8 @@ Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\b
 ::: {.proof}
 Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian^[I'll have a post explaining the Hamiltonian and Pontryagin's principle up soon] for [Problem 2] is 
 \begin{align*}
-  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &= \lambda_0 ( \Gamma ) + \lambda^T \dot{y} \\
-  &= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma (\#eq:16)
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &= \lambda_0 \Gamma  + \lambda^T \dot{y} \\
+  &= \lambda_0 \Gamma + \lambda_1^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma (\#eq:16)
 \end{align*}
 with $\lambda_0 \leq 0$.
 
@@ -249,7 +249,7 @@ where
 
 To maximise the Hamiltonian per the pointwise maximum principle \@ref(eq:18) we want to maximise $R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta$, we want to maximise $||T_c(t)|| \cos \theta$ unless $||R_2(t)|| = 0$. As $||R_2(t)|| = 0$ iff $\lambda_2(t) = 0$ as $m^*(t) \neq 0$. 
 As $\lambda_2(t) \neq 0$ a.e. on $t \in [0, t_f^*]$ then we want to maximise $||T_c(t)|| \cos \theta$ a.e. on $t \in [0, t_f^*]$. 
-So we want to maximise $||T_c(t)||$ as long as $\cos \theta(t) \neq 0$. 
+So we want to maximise $||T_c(t)||$ as long as $\cos \theta(t) \neq 0$ (should it be $\cos \theta(t) > 0$???). 
 As we can choose $\theta$ without constraint for $t \in (0, t^*_f)$^[The start/end constraints determine $\theta$], we choose $\cos \theta = 1$ for $t \in (0, t^*_f)$. 
 The maximum of $||T_c(t)||$ is $\Gamma(t)$ per $\Psi$ so 
 \begin{align*}
@@ -392,11 +392,39 @@ There are 5 conditions that need to be satisfied for an optimal solution to exis
 \end{align*} 
 :::
 
+### Brief Interlude - Boundary Value Problem
 
+When using the Pontryagin's principle you may solve a two-point boundary value problem to obtain the optimal control. I lay it out below.
 
+We have $x = [r, \dot{r}, m]$ where $r \in \mathbb{R}^3$ and $m \in \mathbb{R}$. We also have $\lambda = [\lambda_1, \lambda_2, \lambda_3]$ where $\lambda_1, \lambda_2 \in \mathbb{R}^3$ and $\lambda_3 \in \mathbb{R}$. $g$ is the gravity vector and $\alpha$ is a given scalar coefficient.
+\begin{align*}
+  \dot{x} &= \begin{bmatrix}
+  \dot{r} \\
+  g + \frac{\lambda_2}{||\lambda_2||} \Gamma \\
+  - \alpha \Gamma
+  \end{bmatrix} \\
+  \dot{\lambda} &= - \begin{bmatrix}
+    \boldsymbol 0 \\
+    \lambda_1 \\
+    ||\lambda_2|| \Gamma / m^2
+    \end{bmatrix}
+\end{align*} 
+where \begin{align*}
+  R_{12}(t) = \lambda_0 - \alpha \lambda_3 + \frac{||\lambda_2||}{m} \\
+  \Gamma(t) =
+  \begin{cases}
+    \rho_1, & \text{if } R_{12}(t) < 0 \\
+    \rho_2, & \text{if } R_{12}(t) > 0
+  \end{cases}
+\end{align*} 
+$x(0)$ is given and $r(t_f), \dot{r}(t_f) = \boldsymbol 0$, where $t_f$ is the final time, it is free and $t_f > 0$. Also $\lambda_3(t_f) = 0$, $H(t_f) = \lambda_0 \Gamma + \lambda^T \dot{x} = 0$, $\lambda_0 = 0$ or $-1$ and $\lambda \neq 0$ for all $t \in [0, t_f]$.
 
-Now usually with Pontryagin's principle we will want to solve for the optimal control by maximising the Hamiltonian. However, this requires us to know the value of $\lambda$ and unfortunately we don't have enough boundary conditions on $\lambda$ to work it out. $\lambda_1(t^*_f)$ is not in $H(\psi(t^*_f))$ as $\dot{r}(t_f^*) = 0$, so we can't work out $\lambda_1(t^*_f)$.
+Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn't statify the boundary constraints or would complain about dt <= dtmin. I've given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.
 
-Instead the paper formulates the problem as a SOCP.
+Additionally, I have found the following quote 'solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute' @lys2018, which backs up my experience.
+
+### Change of Variables
+
+In this section a change of variables is introduced to remove the nonlinear state dynamics due to $\frac{T_c}{m}$ @bla2010 @aci2013
 
 # References

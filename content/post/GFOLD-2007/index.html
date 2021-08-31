@@ -33,7 +33,11 @@ bibliography: ref.bib
 <li><a href="#convexification-of-the-control-magnitude-constraint">Convexification of the Control Magnitude Constraint</a>
 <ul>
 <li><a href="#problem-2">Problem 2</a></li>
-<li><a href="#existence-of-an-optimal-solution">Existence of an Optimal solution</a></li>
+<li><a href="#existence-of-an-optimal-solution">Existence of an Optimal solution</a>
+<ul>
+<li><a href="#brief-interlude---boundary-value-problem">Brief Interlude - Boundary Value Problem</a></li>
+<li><a href="#change-of-variables">Change of Variables</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#references">References</a></li>
 </ul>
@@ -112,8 +116,8 @@ The second constraint is a bound on the velocity
 \end{align*}\]</span>
 The last constraint is a “glide slope” constraint (<span class="math inline">\(\theta_{alt}\)</span> is given)
 <span class="math display">\[\begin{align*}
-  \theta_{alt} = \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
-  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq r_1(t) \tan \tilde{\theta}_{alt}
+  \theta_{alt} = \arctan \left( \frac{r_1(t)}{\sqrt{r_2(t)^2 + r_3(t)^2}} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq \frac{r_1(t)}{\tan \tilde{\theta}_{alt}}
 \end{align*}\]</span>
 which can be written using the following form of <a href="#eq:8">(8)</a>
 <span class="math display" id="eq:11">\[\begin{align*}
@@ -126,11 +130,11 @@ where
   0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0
   \end{bmatrix}, \hspace{1cm}
   c = \begin{bmatrix}
-  -\tan \tilde{\theta}_{alt} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+  -\frac{1}{\tan \tilde{\theta}_{alt}} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
   \end{bmatrix}^T
 \end{align*}\]</span>
 The “glide slope” constraint also enforces <span class="math inline">\(r_1(t) \geq 0\)</span>, if <span class="math inline">\(r_1(t) &lt; 0\)</span> then <span class="math inline">\(c^T x \geq 0\)</span> and so <span class="math inline">\(||Sx|| \leq 0\)</span> so <span class="math inline">\(x = 0\)</span> and <span class="math inline">\(r_1(t) = 0\)</span> which is a contradiction.</p>
-<p>In <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span></p>
+<p>FIX glideslope. It simply is measuring another angle as other papers. it is measuring angle from vertical to rocket, so 90 - what is in later papers.</p>
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is descirbed as follows:</p>
@@ -178,8 +182,8 @@ A solution to <a href="#problem-1">Problem 1</a> is clearly a feasible solution 
 <div class="proof">
 <p><span id="unlabeled-div-1" class="proof"><em>Proof</em>. </span>Let <span class="math inline">\(y = [x^T,\ m]^T\)</span> and <span class="math inline">\(x = [x_1^T, x_2^T] = [r, \dot{r}]\)</span>, then <span class="math inline">\(\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T\)</span>. The Hamiltonian<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for <a href="#problem-2">Problem 2</a> is
 <span class="math display" id="eq:16">\[\begin{align*}
-  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &amp;= \lambda_0 ( \Gamma ) + \lambda^T \dot{y} \\
-  &amp;= \lambda_0 \Gamma + \lambda^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma \tag{16}
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &amp;= \lambda_0 \Gamma  + \lambda^T \dot{y} \\
+  &amp;= \lambda_0 \Gamma + \lambda_1^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma \tag{16}
 \end{align*}\]</span>
 with <span class="math inline">\(\lambda_0 \leq 0\)</span>.</p>
 <p>The set of control constraints <span class="math inline">\(\Psi\)</span> is <span class="math inline">\(\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}\)</span> is a fixed set (I think this means it doesn’t vary with time. Actually <span class="math inline">\(\Gamma\)</span> varies with time so I don’t see how this set can’t vary with time).</p>
@@ -233,7 +237,7 @@ where
 \end{align*}\]</span></p>
 <p>To maximise the Hamiltonian per the pointwise maximum principle <a href="#eq:18">(18)</a> we want to maximise <span class="math inline">\(R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta\)</span>, we want to maximise <span class="math inline">\(||T_c(t)|| \cos \theta\)</span> unless <span class="math inline">\(||R_2(t)|| = 0\)</span>. As <span class="math inline">\(||R_2(t)|| = 0\)</span> iff <span class="math inline">\(\lambda_2(t) = 0\)</span> as <span class="math inline">\(m^*(t) \neq 0\)</span>.
 As <span class="math inline">\(\lambda_2(t) \neq 0\)</span> a.e. on <span class="math inline">\(t \in [0, t_f^*]\)</span> then we want to maximise <span class="math inline">\(||T_c(t)|| \cos \theta\)</span> a.e. on <span class="math inline">\(t \in [0, t_f^*]\)</span>.
-So we want to maximise <span class="math inline">\(||T_c(t)||\)</span> as long as <span class="math inline">\(\cos \theta(t) \neq 0\)</span>.
+So we want to maximise <span class="math inline">\(||T_c(t)||\)</span> as long as <span class="math inline">\(\cos \theta(t) \neq 0\)</span> (should it be <span class="math inline">\(\cos \theta(t) &gt; 0\)</span>???).
 As we can choose <span class="math inline">\(\theta\)</span> without constraint for <span class="math inline">\(t \in (0, t^*_f)\)</span><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, we choose <span class="math inline">\(\cos \theta = 1\)</span> for <span class="math inline">\(t \in (0, t^*_f)\)</span>.
 The maximum of <span class="math inline">\(||T_c(t)||\)</span> is <span class="math inline">\(\Gamma(t)\)</span> per <span class="math inline">\(\Psi\)</span> so
 <span class="math display" id="eq:22">\[\begin{align*}
@@ -340,8 +344,38 @@ There are 5 conditions that need to be satisfied for an optimal solution to exis
 \end{align*}\]</span></li>
 </ol>
 </div>
-<p>Now usually with Pontryagin’s principle we will want to solve for the optimal control by maximising the Hamiltonian. However, this requires us to know the value of <span class="math inline">\(\lambda\)</span> and unfortunately we don’t have enough boundary conditions on <span class="math inline">\(\lambda\)</span> to work it out. <span class="math inline">\(\lambda_1(t^*_f)\)</span> is not in <span class="math inline">\(H(\psi(t^*_f))\)</span> as <span class="math inline">\(\dot{r}(t_f^*) = 0\)</span>, so we can’t work out <span class="math inline">\(\lambda_1(t^*_f)\)</span>.</p>
-<p>Instead the paper formulates the problem as a SOCP.</p>
+<div id="brief-interlude---boundary-value-problem" class="section level3">
+<h3>Brief Interlude - Boundary Value Problem</h3>
+<p>When using the Pontryagin’s principle you may solve a two-point boundary value problem to obtain the optimal control. I lay it out below.</p>
+<p>We have <span class="math inline">\(x = [r, \dot{r}, m]\)</span> where <span class="math inline">\(r \in \mathbb{R}^3\)</span> and <span class="math inline">\(m \in \mathbb{R}\)</span>. We also have <span class="math inline">\(\lambda = [\lambda_1, \lambda_2, \lambda_3]\)</span> where <span class="math inline">\(\lambda_1, \lambda_2 \in \mathbb{R}^3\)</span> and <span class="math inline">\(\lambda_3 \in \mathbb{R}\)</span>. <span class="math inline">\(g\)</span> is the gravity vector and <span class="math inline">\(\alpha\)</span> is a given scalar coefficient.
+<span class="math display">\[\begin{align*}
+  \dot{x} &amp;= \begin{bmatrix}
+  \dot{r} \\
+  g + \frac{\lambda_2}{||\lambda_2||} \Gamma \\
+  - \alpha \Gamma
+  \end{bmatrix} \\
+  \dot{\lambda} &amp;= - \begin{bmatrix}
+    \boldsymbol 0 \\
+    \lambda_1 \\
+    ||\lambda_2|| \Gamma / m^2
+    \end{bmatrix}
+\end{align*}\]</span>
+where <span class="math display">\[\begin{align*}
+  R_{12}(t) = \lambda_0 - \alpha \lambda_3 + \frac{||\lambda_2||}{m} \\
+  \Gamma(t) =
+  \begin{cases}
+    \rho_1, &amp; \text{if } R_{12}(t) &lt; 0 \\
+    \rho_2, &amp; \text{if } R_{12}(t) &gt; 0
+  \end{cases}
+\end{align*}\]</span>
+<span class="math inline">\(x(0)\)</span> is given and <span class="math inline">\(r(t_f), \dot{r}(t_f) = \boldsymbol 0\)</span>, where <span class="math inline">\(t_f\)</span> is the final time, it is free and <span class="math inline">\(t_f &gt; 0\)</span>. Also <span class="math inline">\(\lambda_3(t_f) = 0\)</span>, <span class="math inline">\(H(t_f) = \lambda_0 \Gamma + \lambda^T \dot{x} = 0\)</span>, <span class="math inline">\(\lambda_0 = 0\)</span> or <span class="math inline">\(-1\)</span> and <span class="math inline">\(\lambda \neq 0\)</span> for all <span class="math inline">\(t \in [0, t_f]\)</span>.</p>
+<p>Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn’t statify the boundary constraints or would complain about dt &lt;= dtmin. I’ve given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.</p>
+<p>Additionally, I have found the following quote ‘solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute’ <span class="citation"><a href="#ref-lys2018" role="doc-biblioref">Lysandrou</a> (<a href="#ref-lys2018" role="doc-biblioref">2018</a>)</span>, which backs up my experience.</p>
+</div>
+<div id="change-of-variables" class="section level3">
+<h3>Change of Variables</h3>
+<p>In this section a change of variables is introduced to remove the nonlinear state dynamics due to <span class="math inline">\(\frac{T_c}{m}\)</span> <span class="citation"><a href="#ref-bla2010" role="doc-biblioref">Blackmore, Açikmeşe, and Scharf</a> (<a href="#ref-bla2010" role="doc-biblioref">2010</a>)</span> <span class="citation"><a href="#ref-aci2013" role="doc-biblioref">Açıkme¸se, Iii, and Blackmore</a> (<a href="#ref-aci2013" role="doc-biblioref">2013</a>)</span></p>
+</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
@@ -350,11 +384,17 @@ There are 5 conditions that need to be satisfied for an optimal solution to exis
 <div id="ref-aci2007" class="csl-entry">
 Acikmese, Behcet, and Scott R. Ploen. 2007. <span>“Convex Programming Approach to Powered Descent Guidance for Mars Landing.”</span> <em>Journal of Guidance, Control, and Dynamics</em> 30 (5): 1353–66. <a href="https://doi.org/10.2514/1.27553">https://doi.org/10.2514/1.27553</a>.
 </div>
+<div id="ref-aci2013" class="csl-entry">
+Açıkme¸se, Behçet Açıkme¸se, John M Carson Iii, and Lars Blackmore. 2013. <span>“Lossless Convexification of Nonconvex Control Bound and Pointing Constraints of the Soft Landing Optimal Control Problem.”</span> <em><span>IEEE</span> <span>TRANSACTIONS</span> <span>ON</span> <span>CONTROL</span> <span>SYSTEMS</span> <span>TECHNOLOGY</span></em> 21 (6). <a href="https://doi.org/10.1109/TCST.2012.2237346">https://doi.org/10.1109/TCST.2012.2237346</a>.
+</div>
 <div id="ref-aci2008" class="csl-entry">
 Açıkmese, Behçet Açıkmes, Lars Blackmore, Daniel P Scharf, and Aron Wolf. 2008. <span>“Enhancements on the Convex Programming Based Powered Descent Guidance Algorithm for Mars Landing.”</span>
 </div>
 <div id="ref-bla2010" class="csl-entry">
 Blackmore, Lars, Behçet Açikmeşe, and Daniel P Scharf. 2010. <span>“Minimum-Landing-Error Powered-Descent Guidance for Mars Landing Using Convex Optimization.”</span> <a href="https://doi.org/10.2514/1.47202">https://doi.org/10.2514/1.47202</a>.
+</div>
+<div id="ref-lys2018" class="csl-entry">
+Lysandrou, Padraig S. 2018. <span>“A Successive Convexiﬁcation Optimal Guidance Implementation for the Pinpoint Landing of Space Vehicles.”</span> PhD thesis, Cornell University.
 </div>
 </div>
 </div>
