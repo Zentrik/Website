@@ -169,8 +169,15 @@ where <span class="math inline">\(\hat{n}_0\)</span> and <span class="math inlin
   m(0) &amp;= m_{wet}, \hspace{0.6cm} r(0) = r_0, \hspace{0.5cm} \dot{r}(0) = \dot{r}_0 \\
   &amp;\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}\]</span></p>
-<p><a href="#problem-2">Problem 2</a> has introduced a slack variable <span class="math inline">\(\Gamma\)</span> which replaces <span class="math inline">\(|| T_c ||\)</span> and introduces a new constraint <span class="math inline">\(\left \lVert T_c(t) \right \rVert \leq \Gamma(t)\)</span>.
-A solution to <a href="#problem-1">Problem 1</a> is clearly a feasible solution of <a href="#problem-2">Problem 2</a> as we can simply set <span class="math inline">\(\Gamma(t) = ||T_c(t)||\)</span>, however the converse needs to be proved and so below it wil be shown that an optimal solution of <a href="#problem-2">Problem 2</a> is also an optimal solution of <a href="#problem-1">Problem 1</a>, which allows us to solve <a href="#problem-1">Problem 1</a> by solving the convex <a href="#problem-2">Problem 2</a>.</p>
+<p><a href="#problem-2">Problem 2</a> has introduced a slack variable <span class="math inline">\(\Gamma\)</span> which replaces <span class="math inline">\(|| T_c ||\)</span> and introduces a new constraint <span class="math inline">\(\left \lVert T_c(t) \right \rVert \leq \Gamma(t)\)</span>. You can see in the figure below, how the control contraint has been mapped to a convex set.</p>
+<p><img src="images/Control_Constraint.png" style="width:50.0%" /></p>
+<!-- 
+<div class="figure" style="text-align: center">
+<img src="images/Control_Constraint.png" alt="Some cool caption" width="200\linewidth" />
+<p class="caption">(\#fig:image-ref-for-in-text)Some cool caption</p>
+</div>
+-->
+<p>A solution to <a href="#problem-1">Problem 1</a> is clearly a feasible solution of <a href="#problem-2">Problem 2</a> as we can simply set <span class="math inline">\(\Gamma(t) = ||T_c(t)||\)</span>, however the converse needs to be proved and so below it wil be shown that an optimal solution of <a href="#problem-2">Problem 2</a> is also an optimal solution of <a href="#problem-1">Problem 1</a>, which allows us to solve <a href="#problem-1">Problem 1</a> by solving the convex <a href="#problem-2">Problem 2</a>.</p>
 <div class="lemma">
 <p><span id="lem:one" class="lemma"><strong>Lemma 1  </strong></span>Consider a solution of <a href="#problem-2">Problem 2</a> given by <span class="math inline">\([t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]\)</span><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
 Then, <span class="math inline">\([t_f^*, T_c^* (\bullet)]\)</span> is also a solution of <a href="#problem-1">Problem 1</a> and <span class="math inline">\(||T_c^*(t)|| = \rho_1\)</span> or <span class="math inline">\(||T_c^*(t)|| = \rho_2\)</span> for <span class="math inline">\(t \in [0, t_f^*]\)</span>.</p>

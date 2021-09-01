@@ -181,7 +181,16 @@ The modified version of [Problem 1] is as follows:
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}
 
-[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$.
+[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$. You can see in the figure below, how the control contraint has been mapped to a convex set.
+
+![](images/Control_Constraint.png){width=50%}
+
+<!-- 
+```{r image-ref-for-in-text, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Some cool caption', out.width='200\\linewidth', fig.pos='H'}
+knitr::include_graphics("./images/Control_Constraint.png")
+```
+-->
+
 A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $\Gamma(t) = ||T_c(t)||$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
 
 ::: {.lemma #one}
