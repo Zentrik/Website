@@ -7,8 +7,8 @@ date: '2021-06-11T18:13:10.351Z'
 categories: []
 author: admin
 lastMod: '2021-07-21T18:24:20.109Z' 
-featured: no
-draft: true
+featured: true
+draft: false
 image:
   caption: ''
   focal_point: ''
@@ -21,6 +21,8 @@ bibliography: ref.bib
 ---
 
 # Summary
+
+The pin-point landing problem has been of significant interest for a long time however, up till now solving the problem in real-time has been infeasible as the problem is nonconvex. Previous approaches have been polynomial guidance which was famously used on the Apollo lunar lander however, this approach does not satsify thrust constraints or non boundary value state constraints. Alternatively a nonconvex optimisation problem could be solved however, this is slow, has no convergence guarantees and depends on good initial guesses. See @lys2018 for a literature review. This novelity of this paper, @aci2007, is to form a convex equivalent problem to the original problem. This means that we can solve the convex problem instead which is an important step to real-time onboard computation of the optimal trajectory. To solve the convex problem, the paper discretises the problem and represents 'the control input by a finite set of basis vectors, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP.'
 
 The paper, @aci2007, tries to solve the problem of 'guiding a lander spacecraft to a given target on the planet's surface with an accuracy of a fewer than several hundred meters' by 'finding the fuel optimal trajectory that takes a lander with a given initial state (position and velocity) to a prescribed final state'. The lander is modelled 'as a point mass with a single thruster' 'in a uniform gravity field', with decreasing mass and thrusters that can be gimballed and throttled subject to constraints. As 'mars pinpoint landing requires real-time onboard computation of the optimal trajectory' the optimisation problem needs to be convex however, the thrust magnitude constraint is a nonconvex constraint. To convexify this problem 'a slack variable is introduced to relax the nonconvex constraint' and 'it is shown that any optimal solution for the resulting relaxed problem is also optimal for the original problem'. 'Then we approximate the relaxed optimal control problem as a finite-dimensional parameter optimization problem via representing the control input by a finite set of basis functions, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP. Additionally, we consider thruster pointing constraints and extend our convex solution approach to handle this constraint via a heuristic. Finally, we present some simulation results for an example spacecraft'.
 
@@ -47,7 +49,7 @@ $\ddot{r}(t)$ --- Acceleration vector spacecraft at time t relative to surface
 
 $\; \forall \;$ --- for all
 
-a.e. --- almost everywhere, for all elements in a set except for any elements also in another set of measure 0. Any finite set is measure 0...
+a.e. --- almost everywhere, for all elements in a set except for any elements also in another set of measure 0. Any finite set is measure.
 
 $e_i$ --- a vector with $0$s everywhere except for the $i$th position where it is $1$.
 
@@ -109,8 +111,8 @@ The second constraint is a bound on the velocity
 \end{align*}
 The last constraint is a "glide slope" constraint ($\theta_{alt}$ is given)
 \begin{align*}
-  \theta_{alt} = \arctan \left( \frac{r_1(t)}{\sqrt{r_2(t)^2 + r_3(t)^2}} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
-  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq \frac{r_1(t)}{\tan \tilde{\theta}_{alt}}
+  \theta_{alt} = \arctan \left( \frac{\sqrt{r_2(t)^2 + r_3(t)^2}}{r_1(t)} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq r_1(t) \tan \tilde{\theta}_{alt}
 \end{align*} 
 which can be written using the following form of \@ref(eq:8) 
 \begin{align*}
@@ -123,16 +125,25 @@ where
   0 & 0 & 1 & 0 & 0 & 0
   \end{bmatrix}, \hspace{1cm}
   c = \begin{bmatrix}
-  -\frac{1}{\tan \tilde{\theta}_{alt}} & 0 & 0 & 0 & 0 & 0
+  -\tan \tilde{\theta}_{alt} & 0 & 0 & 0 & 0 & 0
   \end{bmatrix}^T
 \end{align*}
 The "glide slope" constraint also enforces $r_1(t) \geq 0$, if $r_1(t) < 0$ then $c^T x \geq 0$ and so $||Sx|| \leq 0$ so $x = 0$ and $r_1(t) = 0$ which is a contradiction.
 
-FIX glideslope. It simply is measuring another angle as other papers. it is measuring angle from vertical to rocket, so 90 - what is in later papers.
+The glide slope constraint is slightly different in this paper compared to later papers, @bla2010, @aci2013, as $\theta_{alt}$ is the angle of the rocket from the vertical whilst the later papers measure the angle from the horizontal.^[Derivation for later papers: 
+\begin{align*}
+  \theta_{alt} = \arctan \left( \frac{r_1(t)}{\sqrt{r_2(t)^2 + r_3(t)^2}} \right) \leq \tilde{\theta}_\text{alt} \leq \frac{\pi}{2} \\
+  \text{So } \sqrt{r_2(t)^2 + r_3(t)^2} \leq \frac{r_1(t)}{\tan \tilde{\theta}_{alt}}
+\end{align*} and
+\begin{align*}
+  c = \begin{bmatrix}
+    -\frac{1}{\tan \tilde{\theta}_{alt}} & 0 & 0 & 0 & 0 & 0
+  \end{bmatrix}^T
+\end{align*} ]
 
 ### Problem 1
 
-Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is descirbed as follows:
+Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is described as follows:
 
 \begin{align*}
   \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} dt \\
@@ -143,14 +154,10 @@ Given the dynamics and constraints outlined above, the trajectory which maximise
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0
 \end{align*}
 
-Inequality \@ref(eq:3) is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
+The thrust magnitude constraint, inequality \@ref(eq:3), is a nonconvex constraint on the control input and so we need to deal with it in order to obtain a convex optimisation problem.
 
-The paper claims that $m^*(t) > 0$ in Lemma \@ref(lem:one), obviously in the real world this is true, however I don't see why this is true in [Problem 1] or [Problem 2]. In @aci2008 they add the constraint $m(t_f) \geq 0$ to their problem and in @bla2010 they add the constraint $m(t_f) \geq m_{dry}$. We will take $m(t) > 0$ to be true henceforth, however I will work out how to properly deal with this at a later date.
-
-`The spacecraft has an available fuel amount, mfuel, that is not explicitly incorporated into the
-trajectory optimization problem FOP. If the optimal fuel amount needed for FOP is larger than the available
-fuel then the problem is infeasible. Another form of infeasibility occurs when there is no solution to FOP,
-due to control and/or state constraints' ???
+We will also add the constraint that $m(t) > 0$, the paper only adds this in Remark 8, I don't know why.
+In @aci2008 they add the constraint $m(t_f) \geq 0$ to their problem, in @bla2010 they add the constraint $m(t_f) \geq m_{dry}$ and in @aci2013 they add $m(t_f) \geq m_{dry} > 0$
 
 Thrust direction can also be constrained at the start and at the end of a maneuver as 
 \begin{align*}
@@ -177,21 +184,27 @@ The modified version of [Problem 1] is as follows:
 \end{align*}
 
 [Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$.
-A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $\Gamma(t) = T_c(t)$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
+A solution to [Problem 1] is clearly a feasible solution of [Problem 2] as we can simply set $\Gamma(t) = ||T_c(t)||$, however the converse needs to be proved and so below it wil be shown that an optimal solution of [Problem 2] is also an optimal solution of [Problem 1], which allows us to solve [Problem 1] by solving the convex [Problem 2]. 
 
 ::: {.lemma #one}
-Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$^[such that the corresponding state trajectory satisfies $x^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$^[This condition was added in @bla2010] ($X$ here enforces all three state constraints, so $X = \{x \in \mathbb{R}^6: ||Sx|| + c^T x \leq 0 \text{ and } || \dot{r}(t) || \leq \hat{V} \}$). I've tried to incorporate the velocity constraint idk if this right <!-- As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary. Actually we have $r_1(t) \geq 0$. -->]. Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
+Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\bullet)]$^[
+  such that the corresponding state trajectory satisfies $x^*(t) \in \operatorname{int} X \; \forall \; t \in (0, t_f^*)$($X$ here enforces all three state constraints, so $X = \{x \in \mathbb{R}^6: ||Sx|| + c^T x \leq 0 \text{ and } || \dot{r}(t) || \leq \hat{V} \}$). 
+  This condition was added in @bla2010 and the appendix extends the result to when $r^*(t)$ touches the boundary at one point $t \in (0, t_f^*)$.
+  <!-- I've tried to incorporate the velocity constraint idk if this right. As we haven't added the constraint $r(t) \in X$, I don't think the condition is necessary. Actually we have $r_1(t) \geq 0$. -->]. 
+Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
 :::
 
+You might want to check out my [notes](tealquaternion.space/post/pontryagin) on Pontryagin's principle first if you don't already understand it .
+
 ::: {.proof}
-Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian^[I'll have a post explaining the Hamiltonian and Pontryagin's principle up soon] for [Problem 2] is 
+Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian for [Problem 2] is 
 \begin{align*}
   H(x, m, T_c, \Gamma, \lambda_0, \lambda) &= \lambda_0 \Gamma  + \lambda^T \dot{y} \\
   &= \lambda_0 \Gamma + \lambda_1^{T} x_2 + \frac{\lambda^T_2 T_c}{m} + \lambda^T_2 g - \alpha \lambda_3 \Gamma (\#eq:16)
 \end{align*}
 with $\lambda_0 \leq 0$.
 
-The set of control constraints $\Psi$ is $\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}$ is a fixed set (I think this means it doesn't vary with time. Actually $\Gamma$ varies with time so I don't see how this set can't vary with time).
+The set of control constraints $\Psi$ is $\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}$ is a fixed set (I think this means it doesn't vary with time, as in it only depends on $\Gamma(t)$ and $T_c$ and not $t$ as well).
 
 Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continouous function^[https://math.stackexchange.com/questions/191268/absolutely-continuous-functions seems like a nice description of what an absolutely continouous function is] $\lambda$ such that
 
@@ -247,10 +260,10 @@ where
   R_2(t) &= \frac{\lambda_2(t)}{m(t)}
 \end{align*} 
 
-To maximise the Hamiltonian per the pointwise maximum principle \@ref(eq:18) we want to maximise $R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c|| \cos \theta$, we want to maximise $||T_c(t)|| \cos \theta$ unless $||R_2(t)|| = 0$. As $||R_2(t)|| = 0$ iff $\lambda_2(t) = 0$ as $m^*(t) \neq 0$. 
-As $\lambda_2(t) \neq 0$ a.e. on $t \in [0, t_f^*]$ then we want to maximise $||T_c(t)|| \cos \theta$ a.e. on $t \in [0, t_f^*]$. 
-So we want to maximise $||T_c(t)||$ as long as $\cos \theta(t) \neq 0$ (should it be $\cos \theta(t) > 0$???). 
-As we can choose $\theta$ without constraint for $t \in (0, t^*_f)$^[The start/end constraints determine $\theta$], we choose $\cos \theta = 1$ for $t \in (0, t^*_f)$. 
+To maximise the Hamiltonian per the pointwise maximum principle \@ref(eq:18) we want to maximise $R_2(t)^T T_c(t) = ||R_2(t)|| \ ||T_c(t)|| \cos \theta(t)$, we want to maximise $||T_c(t)|| \cos \theta(t)$ unless $||R_2(t)|| = 0$. 
+$||R_2(t)|| = 0$ iff $\lambda_2(t) = 0$ as $m^*(t) \neq 0$ and because $\lambda_2(t) \neq 0$ a.e. on $t \in [0, t_f^*]$ then we want to maximise $||T_c(t)|| \cos \theta$ a.e. on $t \in [0, t_f^*]$. 
+So we want to maximise $||T_c(t)||$ as long as $\cos \theta(t) > 0$.
+As we can choose $\theta(t)$ without constraint for $t \in (0, t^*_f)$^[The start/end constraints determine $\theta$ at those times], we choose $\cos \theta(t) = 1$ for all $t \in (0, t^*_f)$. 
 The maximum of $||T_c(t)||$ is $\Gamma(t)$ per $\Psi$ so 
 \begin{align*}
   ||T^*_c(t)|| &= \Gamma^*(t) \text{ a.e. on } [0, t^*_f] (\#eq:22)\\
@@ -304,7 +317,8 @@ So \begin{align*}
   \frac{d ||\lambda_2||}{d t} &= \frac{d }{d t} \sqrt{\sum f_i(t)^2 } \\
   &= \frac{1}{2} \frac{1}{||\lambda_2||} ( 2 f_1(t) \dot{f}_1(t) + 2 f_2(t) \dot{f}_2(t) + \dots + 2 f_n(t) \dot{f}_n(t) ) \\
   &= \frac{\lambda_2^T}{||\lambda_2||} \dot{\lambda}_2
-\end{align*} Where has the half come from?????]
+\end{align*}
+I'm not sure where the half has come from in the paper.]
 where $\lambda_1$ and $a$ are constant vectors and they cannot both be zeros as that would imply that $\lambda_2$ is identically 0 and we know this to be false.
 
 If $\lambda_1 \neq 0$ then $m \dot{R}_{12}$ is not identically 0 and as $m \neq 0$ we know $\dot{R}_{12}$ is not identically 0. When $\lambda_1 \neq 0$, we can see that $\frac{d}{dt} m \dot{R}_{12} = \frac{||\lambda_1||^2}{||\lambda_2||} > 0$, so $m\dot{R}_{12}$ can only be zero at one point and the sign can only change from negative to positive. As $m > 0$ the sign of $\dot{R}_{12}$ is the same as $m\dot{R}_{12}$, there can only be two points at maximum where $R_{12} = 0$ so $R_{12} \neq 0$ a.e. on [0, t_f] when $\lambda_1 \neq 0$.
@@ -317,7 +331,7 @@ Note that $\dot{R}_{12} = 0$ on some interval $[t_a, t_b]$ which is a subset (do
 
 Since $T_c^* = \frac{R_2}{||R_2||}\Gamma^* = \frac{\lambda_2}{||\lambda_2||} \Gamma^*$ then $g^T T_c^* = g^T \lambda_2 \frac{R_2}{||\lambda_2||} = 0$.
 
-Recall $\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}$, where $g$ is a constant and $\frac{T_c^*(t)}{m(t)} = \frac{\Gamma^*(t)}{m(t)} \hat{n}$, letting $\hat{n} = \frac{\lambda_2}{||\lambda_2||}$ which is a constant, is always pointing in the direction of $\hat{n}$. The $\frac{T_c^*(t)}{m(t)}$ component will therefore only affect velocity in the $\hat{n}$ direction. Therefore $\dot{r}(t) = g t + \beta(t) \hat{n} + \dot{r}_0$
+Recall $\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}$, where $g$ is a constant and $\frac{T_c^*(t)}{m(t)} = \frac{\Gamma^*(t)}{m(t)} \hat{n}$ is always pointing in the direction of $\hat{n}$, letting $\hat{n} = \frac{\lambda_2}{||\lambda_2||}$ which is a constant. The $\frac{T_c^*(t)}{m(t)}$ component will therefore only affect velocity in the $\hat{n}$ direction. Therefore $\dot{r}(t) = g t + \beta(t) \hat{n} + \dot{r}_0$
 ^[
 \begin{align*}
   \dot{r}(t) - \dot{r}_0 &= g (t - 0) + \int_{0}^{t} \frac{\Gamma^*(s)}{m(s)} \hat{n} \,ds\\
@@ -326,7 +340,7 @@ Recall $\ddot{r}(t) = g + \frac{T_c(t)}{m(t)}$, where $g$ is a constant and $\fr
   &= g t - \frac{\hat{n}}{\alpha}  \int_{0}^{t} \frac{\dot{m}(s)}{m(s)} \,ds \\
   &= g t - \frac{\hat{n}}{\alpha}  \ln \frac{m(t)}{m(0)}
 \end{align*} 
-You will notice this is the same as the rocket equation (https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based) with $R(t) = -\alpha \Gamma(t)$ and $v_e = \frac{1}{\alpha}$.
+You will notice this is the same as the [rocket equation](https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation#Acceleration-based) with $R(t) = -\alpha \Gamma(t)$ and $v_e = \frac{1}{\alpha}$.
 ] 
 and so $\dot{r}(t_f) = g t_f + \beta_2 \hat{n} + \dot{r}_0 = 0$. Integrating $\dot{r}(t)$ we get $r(t) = r_0 + \dot{r}_0 t + g \frac{t^2}{2} + B(t) \hat{n}$.
 ^[
@@ -392,7 +406,7 @@ There are 5 conditions that need to be satisfied for an optimal solution to exis
 \end{align*} 
 :::
 
-### Brief Interlude - Boundary Value Problem
+## Brief Interlude - Boundary Value Problem
 
 When using the Pontryagin's principle you may solve a two-point boundary value problem to obtain the optimal control. I lay it out below.
 
@@ -423,8 +437,10 @@ Unfortunately, I have found that solving this problem seems difficult. I tried u
 
 Additionally, I have found the following quote 'solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute' @lys2018, which backs up my experience.
 
-### Change of Variables
+## Change of Variables
 
-In this section a change of variables is introduced to remove the nonlinear state dynamics due to $\frac{T_c}{m}$ @bla2010 @aci2013
+In this section a change of variables is introduced to remove the nonlinear state dynamics due to $\frac{T_c}{m}$ @bla2010 @aci2013.
+
+I don't think I am going to make notes on the rest of this paper or the following papers as I was able to skim it well enough to implement the ressults for a rocket with solid motors.
 
 # References
