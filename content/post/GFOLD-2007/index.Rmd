@@ -442,7 +442,7 @@ $x(0)$ is given and $r(t_f), \dot{r}(t_f) = \boldsymbol 0$, where $t_f$ is the f
 
 Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn't statify the boundary constraints or would complain about dt <= dtmin. I've given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.
 
-Additionally, I have found the following quote 'solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute' @lys2018, which backs up my experience.
+Additionally, I have found the following quote 'solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute' @lys2018, which backs up my experience. Also, 'issues that hinder onboard implementation include poor convergence stemming from a sensitivity to the initial guess, and long computation time.' @mal2021
 
 ## Change of Variables
 
