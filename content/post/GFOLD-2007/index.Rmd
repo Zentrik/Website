@@ -194,7 +194,7 @@ Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\b
 Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
 :::
 
-You might want to check out my [notes](tealquaternion.space/post/pontryagin) on Pontryagin's principle first if you don't already understand it .
+You might want to check out my [notes](/post/pontryagin) on Pontryagin's principle first if you don't already understand it .
 
 ::: {.proof}
 Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian for [Problem 2] is 
