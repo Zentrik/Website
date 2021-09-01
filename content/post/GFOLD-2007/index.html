@@ -169,8 +169,20 @@ where <span class="math inline">\(\hat{n}_0\)</span> and <span class="math inlin
   m(0) &amp;= m_{wet}, \hspace{0.6cm} r(0) = r_0, \hspace{0.5cm} \dot{r}(0) = \dot{r}_0 \\
   &amp;\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}\]</span></p>
-<p><a href="#problem-2">Problem 2</a> has introduced a slack variable <span class="math inline">\(\Gamma\)</span> which replaces <span class="math inline">\(|| T_c ||\)</span> and introduces a new constraint <span class="math inline">\(\left \lVert T_c(t) \right \rVert \leq \Gamma(t)\)</span>. You can see in the figure below, how the control contraint has been mapped to a convex set.</p>
-<p><img src="images/Control_Constraint.png" style="width:50.0%" /></p>
+<p><a href="#problem-2">Problem 2</a> has introduced a slack variable <span class="math inline">\(\Gamma\)</span> which replaces <span class="math inline">\(|| T_c ||\)</span> and introduces a new constraint <span class="math inline">\(\left \lVert T_c(t) \right \rVert \leq \Gamma(t)\)</span>. You can see in the figures below, how the control contraint has been mapped to a convex set.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:aci-control-constraint"></span>
+<img src="images/Control_Constraint.png" alt="@aci2007" width="50%" />
+<p class="caption">
+Figure 1: <span class="citation"><a href="#ref-aci2007" role="doc-biblioref">Acikmese and Ploen</a> (<a href="#ref-aci2007" role="doc-biblioref">2007</a>)</span>
+</p>
+</div>
+<!-- ![Malyuta et al. 2021](images/Advances in Trajectory Optimization for Space Vehicle Control.png){width=75%} -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:2021-control-constraint"></span>
+<img src="images/Advances%20in%20Trajectory%20Optimization%20for%20Space%20Vehicle%20Control.png" alt="@mal2021"  />
+<p class="caption">
+Figure 2: <span class="citation"><a href="#ref-mal2021" role="doc-biblioref">Malyuta et al.</a> (<a href="#ref-mal2021" role="doc-biblioref">2021</a>)</span>
+</p>
+</div>
 <!-- 
 <div class="figure" style="text-align: center">
 <img src="images/Control_Constraint.png" alt="Some cool caption" width="200\linewidth" />
@@ -375,7 +387,7 @@ where <span class="math display">\[\begin{align*}
 \end{align*}\]</span>
 <span class="math inline">\(x(0)\)</span> is given and <span class="math inline">\(r(t_f), \dot{r}(t_f) = \boldsymbol 0\)</span>, where <span class="math inline">\(t_f\)</span> is the final time, it is free and <span class="math inline">\(t_f &gt; 0\)</span>. Also <span class="math inline">\(\lambda_3(t_f) = 0\)</span>, <span class="math inline">\(H(t_f) = \lambda_0 \Gamma + \lambda^T \dot{x} = 0\)</span>, <span class="math inline">\(\lambda_0 = 0\)</span> or <span class="math inline">\(-1\)</span> and <span class="math inline">\(\lambda \neq 0\)</span> for all <span class="math inline">\(t \in [0, t_f]\)</span>.</p>
 <p>Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn’t statify the boundary constraints or would complain about dt &lt;= dtmin. I’ve given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.</p>
-<p>Additionally, I have found the following quote ‘solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute’ <span class="citation"><a href="#ref-lys2018" role="doc-biblioref">Lysandrou</a> (<a href="#ref-lys2018" role="doc-biblioref">2018</a>)</span>, which backs up my experience.</p>
+<p>Additionally, I have found the following quote ‘solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute’ <span class="citation"><a href="#ref-lys2018" role="doc-biblioref">Lysandrou</a> (<a href="#ref-lys2018" role="doc-biblioref">2018</a>)</span>, which backs up my experience. Also, ‘issues that hinder onboard implementation include poor convergence stemming from a sensitivity to the initial guess, and long computation time.’ <span class="citation"><a href="#ref-mal2021" role="doc-biblioref">Malyuta et al.</a> (<a href="#ref-mal2021" role="doc-biblioref">2021</a>)</span></p>
 </div>
 <div id="change-of-variables" class="section level2">
 <h2>Change of Variables</h2>
@@ -400,6 +412,9 @@ Blackmore, Lars, Behçet Açikmeşe, and Daniel P Scharf. 2010. <span>“Minimum
 </div>
 <div id="ref-lys2018" class="csl-entry">
 Lysandrou, Padraig S. 2018. <span>“A Successive Convexiﬁcation Optimal Guidance Implementation for the Pinpoint Landing of Space Vehicles.”</span> PhD thesis, Cornell University.
+</div>
+<div id="ref-mal2021" class="csl-entry">
+Malyuta, Danylo, Yue Yu, Purnanand Elango, and Behcet Acikmese. 2021. <span>“Advances in Trajectory Optimization for Space Vehicle Control.”</span> <em><span>arXiv</span>:2108.02335 [Cs, Eess, Math]</em>, August. <a href="http://arxiv.org/abs/2108.02335">http://arxiv.org/abs/2108.02335</a>.
 </div>
 </div>
 </div>

@@ -181,9 +181,16 @@ The modified version of [Problem 1] is as follows:
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}
 
-[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$. You can see in the figure below, how the control contraint has been mapped to a convex set.
+[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$. You can see in the figures below, how the control contraint has been mapped to a convex set.
 
-![](images/Control_Constraint.png){width=50%}
+```{r aci-control-constraint, echo = FALSE, fig.cap = "@aci2007", fig.align="center", out.width = "50%"}
+knitr::include_graphics("images/Control_Constraint.png")
+```
+<!-- ![Malyuta et al. 2021](images/Advances in Trajectory Optimization for Space Vehicle Control.png){width=75%} -->
+
+```{r 2021-control-constraint, echo = FALSE, fig.cap = "@mal2021", fig.align="center"}
+knitr::include_graphics("images/Advances in Trajectory Optimization for Space Vehicle Control.png")
+```
 
 <!-- 
 ```{r image-ref-for-in-text, echo = FALSE, message=FALSE, fig.align='center', fig.cap='Some cool caption', out.width='200\\linewidth', fig.pos='H'}
