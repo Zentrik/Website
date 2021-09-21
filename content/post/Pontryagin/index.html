@@ -27,23 +27,60 @@ projects: []
 output:
   blogdown::html_page:
     toc: true
+bibliography: ref.bib
 ---
 
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
+<li><a href="#dynamic-programming">Dynamic Programming</a></li>
 <li><a href="#simple-problem">Simple Problem</a></li>
-<li><a href="#tldr">TLDR</a></li>
-<li><a href="#proof-summary">Proof Summary</a>
+<li><a href="#original-proof">Original Proof</a></li>
+<li><a href="#on-manifolds">On manifolds</a></li>
+<li><a href="#appendix">Appendix</a>
 <ul>
-<li><a href="#transversality-conditions">Transversality conditions</a></li>
-</ul></li>
+<li><a href="#proof-summary">Proof Summary</a></li>
 <li><a href="#nonlinear-optimal-control-theory-by-leonard-david-berkovitz-negash-g.-medhin">Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin</a></li>
+</ul></li>
+<li><a href="#references">References</a></li>
 </ul>
 </div>
 
-<p>Calculus of Variations and Optimal Control Theory A Concise Introduction by Daniel Liberzon</p>
+<p>Pontryagin’s principle is a set of neccesary conditions for an optimal solution to a dynamical system.</p>
+<p>The general problem is stated as
+<span class="math display">\[\begin{align*}
+  \min K(t_0, x(t_0), t_f, x(t_f)) + \int_{t_0}^{t_f} L(x, u, t) \\
+  s.t. \dot{x} = f(x, u, t),\ (t_0, x(t_0), t_f, x(t_f)) \in \mathcal{B}
+\end{align*}\]</span>
+<span class="math inline">\(u \in U\)</span> constraint?</p>
+<p>This in the form of a bolza problem <span class="citation"><a href="#ref-bolza" role="doc-biblioref"><span>“Bolza Problem - Encyclopedia of Mathematics”</span></a> (<a href="#ref-bolza" role="doc-biblioref">n.d.</a>)</span> and can be converted to a Mayer problem, where <span class="math inline">\(L \equiv 0\)</span>, or a Lagrange problem, where <span class="math inline">\(K \equiv 0\)</span> quite easily.</p>
+<p>The time dependance in the dynamics and the cost can also be easily incorporated into the state by augmenting the state with a variable representing time.</p>
+<p>This problem is stated as, where <span class="math inline">\(x\)</span> is the augmented state and <span class="math inline">\(L\)</span> the agumented cost
+<span class="math display">\[\begin{align*}
+  \min &amp;\int_{t_0}^{t_f} L(x, u) \\
+  s.t. \dot{x} = f(x, u)&amp;,\ (x(t_0), x(t_f)) \in \mathcal{B}
+\end{align*}\]</span></p>
+<p>Pontryagin’s principle for this problem is as follows.</p>
+<ol style="list-style-type: lower-roman">
+<li><p>There exist an absolutely continouous function <span class="math inline">\(\hat{\lambda} = (\lambda_0, \lambda)\)</span> defined on <span class="math inline">\([t_0, t_f]\)</span> such that <span class="math inline">\(\lambda_0\)</span> is either identically minus one or zero, and <span class="math inline">\(\hat{\lambda} \neq \boldsymbol 0\)</span> for all <span class="math inline">\(t \in [t_0, t_f]\)</span></p></li>
+<li><p><span class="math display">\[\begin{align*}
+  \dot{\lambda} = -\frac{\partial H}{\partial x} \left( x^*,\ u^*,\ \lambda_0,\ \lambda \right)
+\end{align*}\]</span></p></li>
+</ol>
+<p>iii
+<span class="math display">\[\begin{align*}
+  H(x^*(t),\ u^*(t),\ \hat{\lambda}(t)) \geq H(x^*(t),\ u,\ \hat{\lambda}(t)) \hspace{0.3cm} \; \forall \; u \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [t_0, t^*_f]
+\end{align*}\]</span>
+Simply put the Hamiltonian must be maximised with respect to <span class="math inline">\(u\)</span> at all times.</p>
+<p>(iiii
+The following <em>transversality condition</em> must be satisfied: Let <span class="math inline">\(\psi = [x^{*^T}, u^{*^T}, \hat{\lambda}^{T} ]^{T}\)</span>, then <span class="math inline">\([ H(\psi(t^*_0)),\ -\lambda(t^*_0)^T,\ -H(\psi(t^*_f)),\ \lambda(t^*_f)^T ]^T\)</span> must be orthorgonal to <span class="math inline">\(\mathcal{B}\)</span> at the point <span class="math inline">\([ t^*_0,\ x^*(t^*_0)^T,\ t^*_f,\ x^*(t^*_f)^T ]\)</span>.</p>
+<p>Cite and fix superscript stars</p>
+<p>There are many different proofs for Pontryagin’s principle depending on how formal we want to be and if we have initial/ target sets etc …</p>
+<div id="dynamic-programming" class="section level1">
+<h1>Dynamic Programming</h1>
+<p>There is the dynamic programming approach in <span class="citation"><a href="#ref-ber2017" role="doc-biblioref">Bertsekas</a> (<a href="#ref-ber2017" role="doc-biblioref">2017</a>)</span></p>
+</div>
 <div id="simple-problem" class="section level1">
 <h1>Simple Problem</h1>
 <p>Fixed or free time?
@@ -60,7 +97,20 @@ Now, we know a small increase in <span class="math inline">\(\epsilon\)</span> a
   0 \geq \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} \Psi(x_\epsilon(T)) = \nabla \Psi(x^*(T)) \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(T)
 \end{align*}\]</span>
 Let <span class="math inline">\(p(T) = \nabla \Psi(x^*(T))\)</span> and <span class="math inline">\(v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)\)</span>. So <span class="math inline">\(p(T) v(T) \leq 0\)</span></p>
-<p>We want to show <span class="math inline">\(pf(x^*, u^*) \leq pf(x^*, u)\)</span> for all <span class="math inline">\(u \in U\)</span> and <span class="math inline">\(t \in [0, T]\)</span>. If we construct <span class="math inline">\(v(T) = f(x^*, u^*) - f(x^*, u)\)</span> then we have show the statement to be true when <span class="math inline">\(t = T\)</span>. Additionally if we can show <span class="math inline">\(p(t)v(t)\)</span> has the same sign for all <span class="math inline">\(t \in [0, T]\)</span> then we have proved the statement.</p>
+<p>We want to show <span class="math inline">\(p(t)f(x^*, u^*) \leq p(t)f(x^*, u)\)</span> for all <span class="math inline">\(u \in U\)</span> and <span class="math inline">\(t \in [0, T]\)</span>. If we construct <span class="math inline">\(v(T) = f(x^*, u^*) - f(x^*, u)\)</span> then we have show the statement to be true when <span class="math inline">\(t = T\)</span>. Additionally if we can show <span class="math inline">\(p(t)v(t)\)</span> has the same sign for all <span class="math inline">\(t \in [0, T]\)</span> then we have proved the statement.</p>
+<p>We can use a mcluarin series to see that the following is true:
+<span class="math display">\[\begin{align*}
+  x_\epsilon(t) &amp;= x^*(t) + \epsilon \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t) + o(\epsilon),\ \text{for $t \geq \tau$} \\
+  &amp;= x^*(t) + \epsilon v(t) + o(\epsilon),\ \text{for $t \geq \tau$}
+\end{align*}\]</span>
+Let <span class="math inline">\(\tau = 0\)</span> and so <span class="math display">\[\begin{align*}
+  \dot{x}_\epsilon(t) &amp;= \dot{x}^*(t) + \epsilon \dot{v}(t) \\
+  \dot{x}_\epsilon(t) &amp;= f(x_\epsilon(t), u^*(t)) \\
+  &amp;= f(x^*(t) + \epsilon v(t) + o(\epsilon), u^*(t)) \\
+  &amp;\approx f(x^*(t), u^*(t)) + \epsilon v(t) \nabla_x f(x^*(t), u^*(t)) \\
+  &amp;= \dot{x}^*(t) + \epsilon v(t) \nabla_x f(x^*(t), u^*(t)) \\
+  \therefore \dot{v}(t) &amp;= v(t) \nabla_x f(x^*(t), u^*(t))
+\end{align*}\]</span></p>
 <p>It turns out we can use a type of variation called a needle variation which is
 <span class="math display">\[\begin{align*}
   u_\epsilon = \begin{cases}
@@ -68,13 +118,30 @@ Let <span class="math inline">\(p(T) = \nabla \Psi(x^*(T))\)</span> and <span cl
     u^*(t) &amp; \text{else}
   \end{cases} 
 \end{align*}\]</span>
-After <span class="math inline">\(\tau\)</span> we are using <span class="math inline">\(u^*(t)\)</span> …
-This gives us <span class="math inline">\(x_\epsilon(\tau)\)</span></p>
-<p>We can make <span class="math inline">\(p(t)\)</span> adjoint to <span class="math inline">\(v(t)\)</span>, so <span class="math inline">\(p(t)v(t)\)</span> is a constant. This proves the statement and shows that the Hamiltonian is constant?</p>
+where <span class="math inline">\(\tau \in (0, T]\)</span> and <span class="math inline">\(0 &lt; \epsilon &lt; \tau\)</span> and <span class="math inline">\(\omega \in U\)</span>.</p>
+<p>We can construct <span class="math inline">\(p(t)\)</span> so that <span class="math inline">\(p(t)v(t)\)</span> as the same sign for all <span class="math inline">\(t \in [0, T]\)</span> by setting <span class="math inline">\(\frac{d }{d t} p(t)v(t) = 0\)</span>. This gives us <span class="math inline">\(\dot{p}(t) = - \nabla_x f(x^*(t), u^*(t)) p(t)\)</span>.</p>
+<p>So now we know $p(t)v(t)  $ for all t …
+Now to finish the proof we can note that <span class="math inline">\(v(\tau) = f(x^*(\tau), \omega) - f(x^*(\tau), u^*(\tau))\)</span> a.e. on <span class="math inline">\(\tau \in [0, T]\)</span>. So setting <span class="math inline">\(\tau = 0\)</span> completes the proof.</p>
+<p>We can note that <span class="math inline">\(v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)\)</span> where <span class="math inline">\(x_\epsilon\)</span> is simply a variation in the inital condition by <span class="math inline">\(\epsilon v(t_0)\)</span>. <span class="citation"><a href="#ref-aro23" role="doc-biblioref">S. Aronna</a> (<a href="#ref-aro23" role="doc-biblioref">2013</a>)</span>
+<span class="citation"><a href="#ref-aro123" role="doc-biblioref">M. S. Aronna</a> (<a href="#ref-aro123" role="doc-biblioref">2020</a>)</span></p>
 </div>
-<div id="tldr" class="section level1">
-<h1>TLDR</h1>
-<p>If we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name <span class="math inline">\(\lambda\)</span>.</p>
+<div id="original-proof" class="section level1">
+<h1>Original Proof</h1>
+<p><span class="citation"><a href="#ref-lib2012" role="doc-biblioref">Liberzon</a> (<a href="#ref-lib2012" role="doc-biblioref">2012</a>)</span></p>
+<p>The book has a good summary so I’m not going to discuss this proof in much detail. It differs from the previous one as it has a set in which the final state and it deals with <span class="math inline">\(u \in U\)</span> better?</p>
+</div>
+<div id="on-manifolds" class="section level1">
+<h1>On manifolds</h1>
+</div>
+<div id="appendix" class="section level1">
+<h1>Appendix</h1>
+<p>These are old notes, they are unpolisihed and will barely make sense.</p>
+<p>The basic variable-endpoint control problem is defined as
+<span class="math display">\[\begin{align*}
+  \min \int_{t_0}^{t_f} L(x, u) \\
+  s.t. \dot{x} = f(x, u),\ t_f \in [t_0, \infty],\ x(t_0) = x_0,\ x(t_f) \in S_1
+\end{align*}\]</span>. A free time, variable-endpoint problem.</p>
+<p>A brief summary of the proof is that if we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name <span class="math inline">\(\lambda\)</span>.</p>
 <p>As reachable set may vary with time, the seperating hyperlane and <span class="math inline">\(\lambda\)</span> may vary with time.</p>
 <p>Lagrange problem, minimising <span class="math inline">\(\int_{t_0}^{t_1} g(x, u, t) \,dt\)</span></p>
 <p>Bolza problem, minising <span class="math inline">\(h(x(t_1)) + \int_{t_0}^{t_1} g(x, u, t) \,dt\)</span></p>
@@ -95,9 +162,8 @@ Then <span class="math inline">\(H(x, u, \lambda) = \lambda^T f(x, u)\)</span>, 
 <p><span class="math inline">\(\lambda_0\)</span> = 0 is an abnormal problem, implying the system is not controllable/ the normality condition is not satified/ fixed time, but non fixed final state will never be abnormal? For linear control systems All trajectories for uncontrollable systems are possibly abnormal extremals 
 if <span class="math inline">\(\lambda_0 \neq 0\)</span> then we can simply divide by <span class="math inline">\(\lambda_0\)</span> and the resulting hamiltonian will be our standard form.<br />
 </p>
-</div>
-<div id="proof-summary" class="section level1">
-<h1>Proof Summary</h1>
+<div id="proof-summary" class="section level3">
+<h3>Proof Summary</h3>
 <p>I will be using <span class="math inline">\(\cdot\)</span> instead of <span class="math inline">\(\langle \rangle\)</span></p>
 <p>Free interval optimal control problem: <span class="math inline">\(x(t_0) \in S_{0}\)</span> and <span class="math inline">\(x(t_1) \in S_{1}\)</span>
 Fixed interval:</p>
@@ -135,7 +201,7 @@ Note that any fixed interval tangent simplex cone at timetis, by definition,cont
 We let <span class="math inline">\(l_\theta = 1 \ \therefore \ v_\theta = f\left( \xi, \omega \right) - f\left( \xi, \mu(t) \right)\)</span> by (4.9). <span class="math inline">\(v_\theta\)</span> is in the fixed interval tangent cone and the evolution till time <span class="math inline">\(\tau\)</span> is in <span class="math inline">\(K(\mu, x_0, t_0, \tau)\)</span>.</p>
 <p>So by (4.7) we can evovle the <span class="math inline">\(\lambda\)</span> instead giving hamiltonian pointwise maximum.</p>
 <p>We have <span class="math inline">\(\lambda(t) \cdot v_\theta \leq 0\)</span>, therefore <span class="math inline">\(\left. \frac{d}{d s} \right|_{s=0}H\)</span> is -ve?.</p>
-<p>The existence of a support hyperplane or the free interval tangent cone almost everywhere, says that applying needle variations the trajectories can only move in “one way”.’ Lemmata 5.12and 5.13 say that this implies that the control must also have an “extremal” property atalmost all instants precedingτ. (The preceding discussion really only has poignancy whenthe free interval tangent cone has a nonempty interior.)’</p>
+<p>The existence of a support hyperplane or the free interval tangent cone almost everywhere, says that applying needle variations the trajectories can only move in “one way.”’ Lemmata 5.12and 5.13 say that this implies that the control must also have an “extremal” property atalmost all instants precedingτ. (The preceding discussion really only has poignancy whenthe free interval tangent cone has a nonempty interior.)’</p>
 <p>We have <span class="math inline">\(\lambda(t) \cdot v_\theta \leq 0\)</span> and <span class="math inline">\(v_\theta = 0\)</span>, so we have a supporting hyperplane with the fixed interval tangent cone. This implies the maximisation of the Hamiltonian??</p>
 <p>In 5.13 We assume that <span class="math inline">\(\lambda(\tau) \cdot v \hspace{0.5cm} \forall \ v \in K_\tau\)</span> where <span class="math inline">\(K(\mu, x_0, t_0, t) \subset K_t \subset \mathbb{R}^n\)</span> for each <span class="math inline">\(t \in [t_0, t_1]\)</span> and that <span class="math inline">\(\lambda\)</span> is the adjoint response with <span class="math inline">\(\lambda(\tau)\)</span> at time <span class="math inline">\(\tau\)</span>. This implies that <span class="math inline">\(\mu(t)\)</span> maximises the hamiltonian.</p>
 <p><span class="math inline">\(K_t\)</span> is a convex cone so it includes the origin. So <span class="math inline">\(\lambda(\tau) \cdot v = 0\)</span> is a supporting hyperplane to <span class="math inline">\(K_\tau\)</span>.</p>
@@ -156,8 +222,8 @@ If <span class="math inline">\(\lambda_*^0 \neq 0\)</span> then we can define <s
 <p>WHY <span class="math inline">\(\lambda_0 \neq 0\)</span> for every <span class="math inline">\(t \in [t_0, t_1]\)</span> IDK. <span class="math inline">\(\lambda \neq 0\)</span> as it is orthogonal to hyperlane, <span class="math inline">\(\therefore\)</span> cannot be <span class="math inline">\(\boldsymbol 0\)</span></p>
 <p>(6.4) If control is bounded then Hamiltonian is a constant wrt time.</p>
 <p>() We approximate the reachable set with convex cones. The reachable set is the states we can get to from <span class="math inline">\(x_0\)</span> at <span class="math inline">\(t_0\)</span> at <span class="math inline">\(t_1\)</span> by setting the input. The needle variations form a convex cone, which is a subset of the reachable set. ‘The idea of the fixed interval tangent cone is that it should be a set of “directions” from which trajectories of the system emanate.’</p>
-<div id="transversality-conditions" class="section level3">
-<h3>Transversality conditions</h3>
+<div id="transversality-conditions" class="section level4">
+<h4>Transversality conditions</h4>
 <p>Before we stated that we should not be able to stay at the same state and decrease cost. Here we will be using the fact that we cannot stay in the stay in the state set <span class="math inline">\(S_0\)</span> and <span class="math inline">\(S_1\)</span> whilst decreasing cost.</p>
 <p>(6.5) Fig 6.2, 6.3 are quite helpful here. <span class="math inline">\(U\)</span> is a ball, where in the last dimension it is non negative (i.e. the ball has been cut in half). More precisely <span class="math inline">\(U\)</span> contains the semi ball? <span class="math inline">\(\phi\)</span> is a continuous mapping of <span class="math inline">\(U\)</span> which has a continuous inverse. <span class="math inline">\(D \phi(y)\)</span> has one unique output for each <span class="math inline">\(y \in U\)</span> (as <span class="math inline">\(U \subset U&#39;\)</span>, I have replaced the references to <span class="math inline">\(U&#39;\)</span> in this line. is this valid?). <span class="math inline">\(\epsilon = \phi(U)\)</span> and the boundary of <span class="math inline">\(\epsilon\)</span> is just <span class="math inline">\(\phi(y)\)</span> where <span class="math inline">\(y\)</span> are points on the flat part of the semi ball, <span class="math inline">\(U\)</span> (points where the last dimension is 0).</p>
 <p>(6.6) We denote <span class="math inline">\(T_x S_0 = \ker(\nabla \Phi_0(x))\)</span> the tangent space to <span class="math inline">\(S_0\)</span> at a point <span class="math inline">\(x \in S_0\)</span>. Now if we have a starting state <span class="math inline">\(x_0 \in S_0\)</span>, the extended state (including cost) is <span class="math inline">\((0, x_0)\)</span>. Let the state at time t starting at the extended state, with control <span class="math inline">\(\mu(t)\)</span> be <span class="math inline">\(\xi(\mu, (0, x_0), t_0, t)\)</span> which we will denote as <span class="math inline">\(\xi(t)\)</span> for brevity. We have a needle variation with <span class="math inline">\(\tau \in (t_0, t_1)\)</span>. We denote <span class="math inline">\(\mathscr{K}(\mu, x_0, t_0, t) = \text{cl}(\text{conv cone} (\Phi(\boldsymbol \mu, x_0, t_0, t_0, t)((\boldsymbol T_{\xi(t_0)} S_0) \cup K(\mu, x_0, t_0, t)))\)</span>. <span class="math inline">\((\boldsymbol \Phi(\mu, x_0, t_0, t_0, t)((\boldsymbol T_{\xi(t_0)} S_0)\)</span>, recall that <span class="math inline">\(\Phi\)</span> is a map from of a state between two times in this case from <span class="math inline">\(t_0\)</span> to <span class="math inline">\(t\)</span>?, so this is the tangent space at time <span class="math inline">\(t\)</span> as the system has evolved according to the state dynamics <span class="math inline">\(f\)</span>?
@@ -176,8 +242,8 @@ As <span class="math inline">\(\hat{T}_{\hat{\xi}(t_1)} S_1 \subset T^+_{\hat{\x
 (4.12) ξ(μΘ(s,·),x0,t0,t) =ξ(μ,x0,t0,t) +sΦ(μ,x0,t0,τ1,t)·vθ1+…+sΦ(μ,x0,t0,τk,t)·v_θk + o(s)</p>
 </div>
 </div>
-<div id="nonlinear-optimal-control-theory-by-leonard-david-berkovitz-negash-g.-medhin" class="section level1">
-<h1>Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin</h1>
+<div id="nonlinear-optimal-control-theory-by-leonard-david-berkovitz-negash-g.-medhin" class="section level3">
+<h3>Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin</h3>
 <p>The sequel to citation 23 in the paper</p>
 <p>I will be using the same notation as used in the previous section. <span class="math inline">\(e(\phi) = (t_0, \xi(0), t_1, \xi(t_1))\)</span>, the set <span class="math inline">\(\mathcal{B}\)</span> of points <span class="math inline">\(e(\phi)\)</span> in <span class="math inline">\(\mathbb{R}^{2n + 2}\)</span>. <span class="math inline">\(\mathcal{B} = \{ (t_0, \xi_0, t_1, \xi_1) : (t_0, \xi_0) \in \mathcal{T}_0, \ (t_1, \xi_1) \in \mathcal{T}_1 \}\)</span>.  is similar to S in previous section but also includes constraint on the time.</p>
 <p>If <span class="math inline">\((t_0, x_0)\)</span> are fixed and we have a n-dimensional manifold <span class="math inline">\(\mathcal{T}_1\)</span>. And if the trajectory <span class="math inline">\(\xi\)</span> is not tangent to <span class="math inline">\(\mathcal{T}_1\)</span> at <span class="math inline">\((t_1, \xi(t_1))\)</span> then <span class="math inline">\(\lambda^0 \neq 0\)</span></p>
@@ -202,4 +268,25 @@ Nice article: <a href="https://www.janheiland.de/post/pontr-pendl/#the-maximum-p
 If we have a function <span class="math inline">\(f(x)\)</span> we can let <span class="math inline">\(r(t) = f(a + t v)\)</span> (v is the direction we are making our nudge in). Then the tangent is <span class="math inline">\(\left. \frac{d}{d t} \right|_{t=a}r(t) = D_v f(a)\)</span> at a.
 <a href="https://www.youtube.com/watch?v=cHNT7_F8m1Y&amp;list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&amp;index=75" class="uri">https://www.youtube.com/watch?v=cHNT7_F8m1Y&amp;list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&amp;index=75</a></p>
 <p>WHY ARE NEEDLE VARIATIONS USED AND NOT SOMETHING ELSE.</p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-aro123" class="csl-entry">
+Aronna, María Soledad. 2020. <span>“On the Pontryagin Maximum Principle,”</span> October, 123. <a href="http://utrechtgeometrycentre.nl/wp-content/uploads/2020/12/Aronna-Complete-notes.pdf">http://utrechtgeometrycentre.nl/wp-content/uploads/2020/12/Aronna-Complete-notes.pdf</a>.
+</div>
+<div id="ref-aro23" class="csl-entry">
+Aronna, Soledad. 2013. <span>“Lecture on the Pontryagin Maximum Principle,”</span> January, 23. <a href="http://itn-sadco.inria.fr/itn-sadco.inria.fr/files/yrw-2013/YRW2013-Aronna.pdf/at_download/YRW2013-Aronna.pdf">http://itn-sadco.inria.fr/itn-sadco.inria.fr/files/yrw-2013/YRW2013-Aronna.pdf/at_download/YRW2013-Aronna.pdf</a>.
+</div>
+<div id="ref-ber2017" class="csl-entry">
+Bertsekas, Dimitri P. 2017. <em>Dynamic Programming and Optimal Control: 1</em>. 4th edition. Nashua, <span>NH</span>: Athena Scientific.
+</div>
+<div id="ref-bolza" class="csl-entry">
+<span>“Bolza Problem - Encyclopedia of Mathematics.”</span> n.d. Accessed September 20, 2021. <a href="https://encyclopediaofmath.org/wiki/Bolza_problem">https://encyclopediaofmath.org/wiki/Bolza_problem</a>.
+</div>
+<div id="ref-lib2012" class="csl-entry">
+Liberzon, Daniel. 2012. <em>Calculus of Variations and Optimal Control Theory</em>. <a href="https://press.princeton.edu/books/hardcover/9780691151878/calculus-of-variations-and-optimal-control-theory">https://press.princeton.edu/books/hardcover/9780691151878/calculus-of-variations-and-optimal-control-theory</a>.
+</div>
+</div>
 </div>

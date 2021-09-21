@@ -27,9 +27,53 @@ projects: []
 output:
   blogdown::html_page:
     toc: true
+bibliography: ref.bib
 ---
 
-Calculus of Variations and Optimal Control Theory A Concise Introduction by Daniel Liberzon
+Pontryagin’s principle is a set of neccesary conditions for an optimal solution to a dynamical system.
+
+The general problem is stated as 
+\begin{align*}
+  \min K(t_0, x(t_0), t_f, x(t_f)) + \int_{t_0}^{t_f} L(x, u, t) \\
+  s.t. \dot{x} = f(x, u, t),\ (t_0, x(t_0), t_f, x(t_f)) \in \mathcal{B}
+\end{align*}
+$u \in U$ constraint?
+
+This in the form of a bolza problem @bolza and can be converted to a Mayer problem, where $L \equiv 0$, or a Lagrange problem, where $K \equiv 0$ quite easily.
+
+The time dependance in the dynamics and the cost can also be easily incorporated into the state by augmenting the state with a variable representing time.
+
+This problem is stated as, where $x$ is the augmented state and $L$ the agumented cost
+\begin{align*}
+  \min &\int_{t_0}^{t_f} L(x, u) \\
+  s.t. \dot{x} = f(x, u)&,\ (x(t_0), x(t_f)) \in \mathcal{B}
+\end{align*} 
+
+Pontryagin’s principle for this problem is as follows.
+
+(i) There exist an absolutely continouous function $\hat{\lambda} = (\lambda_0, \lambda)$ defined on $[t_0, t_f]$ such that $\lambda_0$ is either identically minus one or zero, and $\hat{\lambda} \neq \boldsymbol 0$ for all $t \in [t_0, t_f]$
+
+(ii)
+\begin{align*}
+  \dot{\lambda} = -\frac{\partial H}{\partial x} \left( x^*,\ u^*,\ \lambda_0,\ \lambda \right)
+\end{align*} 
+
+iii
+\begin{align*}
+  H(x^*(t),\ u^*(t),\ \hat{\lambda}(t)) \geq H(x^*(t),\ u,\ \hat{\lambda}(t)) \hspace{0.3cm} \; \forall \; u \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [t_0, t^*_f]
+\end{align*} 
+Simply put the Hamiltonian must be maximised with respect to $u$ at all times.
+
+(iiii
+The following *transversality condition* must be satisfied: Let $\psi = [x^{*^T}, u^{*^T}, \hat{\lambda}^{T} ]^{T}$, then $[ H(\psi(t^*_0)),\ -\lambda(t^*_0)^T,\ -H(\psi(t^*_f)),\ \lambda(t^*_f)^T ]^T$ must be orthorgonal to $\mathcal{B}$ at the point $[ t^*_0,\ x^*(t^*_0)^T,\ t^*_f,\ x^*(t^*_f)^T ]$.
+
+Cite and fix superscript stars
+
+There are many different proofs for Pontryagin’s principle depending on how formal we want to be and if we have initial/ target sets etc ...
+
+# Dynamic Programming
+
+There is the dynamic programming approach in @ber2017
 
 # Simple Problem
 Fixed or free time?
@@ -47,7 +91,21 @@ Now, we know a small increase in $\epsilon$ at $\epsilon=0$ must decrease the ob
 \end{align*} 
 Let $p(T) = \nabla \Psi(x^*(T))$ and $v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)$. So $p(T) v(T) \leq 0$
 
-We want to show $pf(x^*, u^*) \leq pf(x^*, u)$ for all $u \in U$ and $t \in [0, T]$. If we construct $v(T) = f(x^*, u^*) - f(x^*, u)$ then we have show the statement to be true when $t = T$. Additionally if we can show $p(t)v(t)$ has the same sign for all $t \in [0, T]$ then we have proved the statement.
+We want to show $p(t)f(x^*, u^*) \leq p(t)f(x^*, u)$ for all $u \in U$ and $t \in [0, T]$. If we construct $v(T) = f(x^*, u^*) - f(x^*, u)$ then we have show the statement to be true when $t = T$. Additionally if we can show $p(t)v(t)$ has the same sign for all $t \in [0, T]$ then we have proved the statement.
+
+We can use a mcluarin series to see that the following is true:
+\begin{align*}
+  x_\epsilon(t) &= x^*(t) + \epsilon \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t) + o(\epsilon),\ \text{for $t \geq \tau$} \\
+  &= x^*(t) + \epsilon v(t) + o(\epsilon),\ \text{for $t \geq \tau$}
+\end{align*} 
+Let $\tau = 0$ and so \begin{align*}
+  \dot{x}_\epsilon(t) &= \dot{x}^*(t) + \epsilon \dot{v}(t) \\
+  \dot{x}_\epsilon(t) &= f(x_\epsilon(t), u^*(t)) \\
+  &= f(x^*(t) + \epsilon v(t) + o(\epsilon), u^*(t)) \\
+  &\approx f(x^*(t), u^*(t)) + \epsilon v(t) \nabla_x f(x^*(t), u^*(t)) \\
+  &= \dot{x}^*(t) + \epsilon v(t) \nabla_x f(x^*(t), u^*(t)) \\
+  \therefore \dot{v}(t) &= v(t) \nabla_x f(x^*(t), u^*(t))
+\end{align*} 
 
 It turns out we can use a type of variation called a needle variation which is 
 \begin{align*}
@@ -56,14 +114,36 @@ It turns out we can use a type of variation called a needle variation which is
     u^*(t) & \text{else}
   \end{cases} 
 \end{align*} 
-After $\tau$ we are using $u^*(t)$ ...
-This gives us $x_\epsilon(\tau)$
+where $\tau \in (0, T]$ and $0 < \epsilon < \tau$ and $\omega \in U$.
 
-We can make $p(t)$ adjoint to $v(t)$, so $p(t)v(t)$ is a constant. This proves the statement and shows that the Hamiltonian is constant?
+We can construct $p(t)$ so that $p(t)v(t)$ as the same sign for all $t \in [0, T]$ by setting $\frac{d }{d t} p(t)v(t) = 0$. This gives us $\dot{p}(t) = - \nabla_x f(x^*(t), u^*(t)) p(t)$. 
 
-# TLDR
+So now we know $p(t)v(t) \leq 0 $ for all t ...
+Now to finish the proof we can note that $v(\tau) = f(x^*(\tau), \omega) - f(x^*(\tau), u^*(\tau))$ a.e. on $\tau \in [0, T]$. So setting $\tau = 0$ completes the proof.
 
-If we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name $\lambda$. 
+We can note that $v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)$ where $x_\epsilon$ is simply a variation in the inital condition by $\epsilon v(t_0)$. @aro23
+@aro123
+
+# Original Proof
+@lib2012
+
+The book has a good summary so I'm not going to discuss this proof in much detail. It differs from the previous one as it has a set in which the final state and it deals with $u \in U$ better?
+
+# On manifolds
+
+
+
+# Appendix
+
+These are old notes, they are unpolisihed and will barely make sense. 
+
+The basic variable-endpoint control problem is defined as
+\begin{align*}
+  \min \int_{t_0}^{t_f} L(x, u) \\
+  s.t. \dot{x} = f(x, u),\ t_f \in [t_0, \infty],\ x(t_0) = x_0,\ x(t_f) \in S_1
+\end{align*}. A free time, variable-endpoint problem.
+
+A brief summary of the proof is that if we have an optimal control trajectory, at any point in time we cannot adjust the control to reduce the cost. If we have a set at the same time which represents all the different states that we could have been if we varied the control for a given intial state. Therefore, there must exist a seperating (?) hyperplane at optimal cost, optimal state that seperates the reachable set and the points, less than optimal cost, optimal state. We use a first order approximation of the reachable set to get a cone. Therefore the seperating hyperplane sepererates the cone and the point -1, 0. We can describe the seperating hyperlane using the orthogonal vector to it which we will name $\lambda$. 
 
 As reachable set may vary with time, the seperating hyperlane and $\lambda$ may vary with time.
 
@@ -91,7 +171,7 @@ Then $H(x, u, \lambda) = \lambda^T f(x, u)$, $\dot{\lambda}(t) = - \nabla_x H(x^
 $\lambda_0$ = 0 is an abnormal problem, implying the system is not controllable/ the normality condition is not satified/ fixed time, but non fixed final state will never be abnormal? For linear control systems All  trajectories  for  uncontrollable  systems  are  possibly  abnormal  extremals \dots
 if $\lambda_0 \neq 0$ then we can simply divide by $\lambda_0$ and the resulting hamiltonian will be our standard form.\
 
-# Proof Summary
+### Proof Summary
 
 I will be using $\cdot$ instead of $\langle \rangle$
 
@@ -196,7 +276,7 @@ WHY $\lambda_0 \neq 0$ for every $t \in [t_0, t_1]$ IDK. $\lambda \neq 0$ as it 
 
 () We approximate the reachable set with convex cones. The reachable set is the states we can get to from $x_0$ at $t_0$ at $t_1$ by setting the input. The needle variations form a convex cone, which is a subset of the reachable set. 'The idea of the fixed interval tangent cone is that it should be a set of “directions” from which trajectories of the system emanate.'
 
-### Transversality conditions
+#### Transversality conditions
 
 Before we stated that we should not be able to stay at the same state and decrease cost. Here we will be using the fact that we cannot stay in the stay in the state set $S_0$ and $S_1$ whilst decreasing cost.
 
@@ -227,7 +307,7 @@ As $\hat{T}_{\hat{\xi}(t_1)} S_1 \subset T^+_{\hat{\xi}_*(t_1)} \hat{S}_1$ and $
 (4.9) ξ(μΘ(s,·),x0,t0,τ_\theta) =ξ(μ,x0,t0,τ1) +sv_θ + o(s)
 (4.12) ξ(μΘ(s,·),x0,t0,t) =ξ(μ,x0,t0,t) +sΦ(μ,x0,t0,τ1,t)·vθ1+...+sΦ(μ,x0,t0,τk,t)·v_θk + o(s) 
 
-# Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin
+### Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin
 
 The sequel to citation 23 in the paper
 
@@ -268,3 +348,5 @@ If we have a function $f(x)$ we can let $r(t) = f(a + t v)$ (v is the direction 
 https://www.youtube.com/watch?v=cHNT7_F8m1Y&list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&index=75
 
 WHY ARE NEEDLE VARIATIONS USED AND NOT SOMETHING ELSE.
+
+# References
