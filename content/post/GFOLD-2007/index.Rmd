@@ -144,7 +144,7 @@ The glide slope constraint is slightly different in this paper compared to later
 Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is described as follows:
 
 \begin{align*}
-  \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} dt \\
+  \max_{t_f, T_c(\bullet)} m(t_f) &= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} ||T_c(t)|| dt \\
   \text{subject to } \ddot{r}(t) &= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} \dot{m}(t) = - \alpha ||T_c(t)|| \\
   0 < \rho_{1} &\leq ||T_c(t)|| \leq \rho_{2}, \hspace{0.6cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &+ c^T_j x(t) + a_j \leq 0, \hspace{0.5cm} j = 1, \ldots, n_s \\
@@ -157,7 +157,7 @@ The thrust magnitude constraint, inequality \@ref(eq:3), is a nonconvex constrai
 We will also add the constraint that $m(t) > 0$, the paper only adds this in Remark 8, I don't know why.
 In @aci2008 they add the constraint $m(t_f) \geq 0$ to their problem, in @bla2010 they add the constraint $m(t_f) \geq m_{dry}$ and in @aci2013 they add $m(t_f) \geq m_{dry} > 0$
 
-Thrust direction can also be constrained at the start and at the end of a maneuver as 
+Thrust direction can also be constrained at the start and at the end of a manoeuvre  as 
 \begin{align*}
   T_c(0) = ||T_c(0)|| \hat{n}_0, \hspace{1.5cm} T_c(t_f) = ||T_c(t_f)|| \hat{n}_f (\#eq:12)
 \end{align*} 
@@ -181,7 +181,7 @@ The modified version of [Problem 1] is as follows:
   &\hspace{0.15cm} r(t_f) = \dot{r}(t_f) = 0 
 \end{align*}
 
-[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$. You can see in the figures below, how the control contraint has been mapped to a convex set.
+[Problem 2] has introduced a slack variable $\Gamma$ which replaces $|| T_c ||$ and introduces a new constraint $\left \lVert T_c(t) \right \rVert \leq \Gamma(t)$. You can see in the figures below, how the control constraint has been mapped to a convex set.
 
 ```{r aci-control-constraint, echo = FALSE, fig.cap = "@aci2007", fig.align="center", out.width = "50%"}
 knitr::include_graphics("images/Control_Constraint.png")
@@ -220,21 +220,21 @@ with $\lambda_0 \leq 0$.
 
 The set of control constraints $\Psi$ is $\left\{ (T_c, \Gamma) : ||T_c(t)|| \leq \Gamma(t),\ \rho_1 \leq \Gamma(t) \leq \rho_2 \right\}$ is a fixed set (I think this means it doesn't vary with time, as in it only depends on $\Gamma(t)$ and $T_c$ and not $t$ as well).
 
-Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continouous function^[https://math.stackexchange.com/questions/191268/absolutely-continuous-functions seems like a nice description of what an absolutely continouous function is] $\lambda$ such that
+Let $v = [T_c^T,\ \Gamma]^T$, then there exist a $\lambda_0 \leq 0$ and an absolutely continuous function^[https://math.stackexchange.com/questions/191268/absolutely-continuous-functions seems like a nice description of what an absolutely continuous function is] $\lambda$ such that
 
 1. $[\lambda_0,\ \lambda^T]^T \neq 0 \; \forall \; t \in [0,\ t^*_f]$ and
 \begin{align*}
   \dot{\lambda} = -\frac{\partial H}{\partial y} \left( y^*,\ v^*,\ \lambda_0,\ \lambda \right) (\#eq:17)
 \end{align*} 
 
-2. *Pointwise maximum principle* given below must be satisified
+2. *Pointwise maximum principle* given below must be satisfied
 \begin{align*}
   H(y^*(t),\ v^*(t), \lambda_0, \lambda) \geq H(y^*(t),\ v, \lambda_0, \lambda) \hspace{0.3cm} \; \forall \; v \in \Psi \hspace{0.3cm} \text{a.e. on } t \in [0, t^*_f] (\#eq:18)
 \end{align*} 
 
 Simply put the Hamiltonian must be maximised with respect to $v$ at all times.
 
-3. The following *transversality condition* must be satisfied: Let $\psi = [y^{*^T}, v^{*^T}, \lambda_0, \lambda^{T} ]^{T}$, then $[ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T$ must be orthorgonal to the set of feasible initial and final conditions $[0, y(0), t_f, y(t_f) ]$ at the point $[ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T ]$.
+3. The following *transversality condition* must be satisfied: Let $\psi = [y^{*^T}, v^{*^T}, \lambda_0, \lambda^{T} ]^{T}$, then $[ H(\psi(0)),\ -\lambda(0)^T,\ -H(\psi(t^*_f)),\ \lambda(t_f^*)^T ]^T$ must be orthogonal to the set of feasible initial and final conditions $[0, y(0), t_f, y(t_f) ]$ at the point $[ 0,\ y^*(0)^T,\ t_f^*,\ y^*(t_f^*)^T ]$.
 :::
 
 Starting with the first necessary condition \@ref(eq:17), we can see that ^[Check out comments of answer at https://math.stackexchange.com/questions/3270789/partial-derivative-of-a-dot-product-with-respect-to-one-of-its-vectors to see why $\frac{d}{d x_2} \lambda_1^T x_2 = \lambda_1$]
@@ -290,7 +290,8 @@ Therefore an optimal solution of [Problem 2] satisfies all the constraints of [P
 Now we will show that $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for any $t \in [0, t_f^*]$ by using the pointwise maximum principle. 
 We can now see that ^[$\cos \theta = 1$ except when start/end constraints are binding]
 \begin{align*}
-  H(x, m, T_c, \Gamma, \lambda_0, \lambda) = H(\psi(t)) = R_{12}(t) \Gamma + R_0(t), \text{   where } R_{12}(t) = R_1(t) + ||R_2(t)||
+  H(x, m, T_c, \Gamma, \lambda_0, \lambda) &= H(\psi(t)) = R_{12}(t) \Gamma + R_0(t), \\
+  \text{ where } R_{12}(t) &= R_1(t) + ||R_2(t)||
 \end{align*}
 
 The pointwise maximum principle implies that 
@@ -389,7 +390,7 @@ remember $r_{0_1} = -\frac{g^T}{||g||} r_0$.
 Recall we assumed $r_{0_1} > 0$ in \@ref(eq:6), which leads to a contradiction. 
 Therefore, $R_{12}(t) \neq 0 \; \forall \; t \in [0, t_f]$ when $\lambda_1 = 0$ and so $R_{12}(t) \neq 0$ a.e. on $[0, t_f^*]$.
 
-The proof of Lemma \@ref(lem:one) is thus complete. Lemma \@ref(lem:one) implies that main nonconvex constraint on the thrust magnitude \@ref(eq:3) in [Problem 1] is convexified by replacing it with \@ref(eq:14) and \@ref(eq:15) in Problem 2 via the introduction of a slack variable $\Gamma$. Furthemore, Lemma \@ref(lem:one) states that if there exists and optimal solution for [Problem 2], then there also exist one for [Problem 1] and it can be obtained directly from the optimal solution of [Problem 2].
+The proof of Lemma \@ref(lem:one) is thus complete. Lemma \@ref(lem:one) implies that main nonconvex constraint on the thrust magnitude \@ref(eq:3) in [Problem 1] is convexified by replacing it with \@ref(eq:14) and \@ref(eq:15) in Problem 2 via the introduction of a slack variable $\Gamma$. Furthermore, Lemma \@ref(lem:one) states that if there exists and optimal solution for [Problem 2], then there also exist one for [Problem 1] and it can be obtained directly from the optimal solution of [Problem 2].
 
 To add the start/end thrust direction constraints \@ref(eq:12) to [Problem 2] we use \@ref(eq:22) to get the constraints 
 \begin{align*}
@@ -447,7 +448,7 @@ where \begin{align*}
 \end{align*} 
 $x(0)$ is given and $r(t_f), \dot{r}(t_f) = \boldsymbol 0$, where $t_f$ is the final time, it is free and $t_f > 0$. Also $\lambda_3(t_f) = 0$, $H(t_f) = \lambda_0 \Gamma + \lambda^T \dot{x} = 0$, $\lambda_0 = 0$ or $-1$ and $\lambda \neq 0$ for all $t \in [0, t_f]$.
 
-Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn't statify the boundary constraints or would complain about dt <= dtmin. I've given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.
+Unfortunately, I have found that solving this problem seems difficult. I tried using the bvp4c solver in matlab which complained about a singular jacobian matrix even if I gave the analytic jacobian. I also used a few different solvers in julia which would give a result that didn't satisfy the boundary constraints or would complain about dt <= dtmin. I've given up on trying to numerically solve it, I just thought it would be much simpler than what the paper did but I have no experience with numerical methods in general. I figure I need to give it a better initial guess for the adjoint equations or the bang bang control is giving problems.
 
 Additionally, I have found the following quote 'solving the resulted two-point boundary value problem is a difficult task, and good initial guesses of the adjoint variables can be difficult to find or compute' @lys2018, which backs up my experience. Also, 'issues that hinder onboard implementation include poor convergence stemming from a sensitivity to the initial guess, and long computation time.' @mal2021
 
@@ -455,6 +456,6 @@ Additionally, I have found the following quote 'solving the resulted two-point b
 
 In this section a change of variables is introduced to remove the nonlinear state dynamics due to $\frac{T_c}{m}$ @bla2010 @aci2013.
 
-I don't think I am going to make notes on the rest of this paper or the following papers as I was able to skim it well enough to implement the ressults for a rocket with solid motors.
+I don't think I am going to make notes on the rest of this paper or the following papers as I was able to skim it well enough to implement the results for a rocket with solid motors.
 
 # References

@@ -137,7 +137,7 @@ The “glide slope” constraint also enforces <span class="math inline">\(r_1(t
 <h3>Problem 1</h3>
 <p>Given the dynamics and constraints outlined above, the trajectory which maximises the final mass of the rocket (equivalent to minimising the loss in mass) is described as follows:</p>
 <p><span class="math display">\[\begin{align*}
-  \max_{t_f, T_c(\bullet)} m(t_f) &amp;= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} dt \\
+  \max_{t_f, T_c(\bullet)} m(t_f) &amp;= \min_{t_f, T_c(\bullet)} \int_{0}^{t_{f}} ||T_c(t)|| dt \\
   \text{subject to } \ddot{r}(t) &amp;= g + \frac{T_c(t)}{m(t)}, \hspace{1cm} \dot{m}(t) = - \alpha ||T_c(t)|| \\
   0 &lt; \rho_{1} &amp;\leq ||T_c(t)|| \leq \rho_{2}, \hspace{0.6cm} r_1(t) \geq 0 \\
   ||S_j x(t) - v_j|| &amp;+ c^T_j x(t) + a_j \leq 0, \hspace{0.5cm} j = 1, \ldots, n_s \\
