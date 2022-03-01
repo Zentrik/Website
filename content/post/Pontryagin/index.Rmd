@@ -151,7 +151,7 @@ So now we know $\lambda(t)v(t) \leq 0$ for all $t$.
 Now to finish the proof we can note that $v(\tau) = f(x^*(\tau), \omega) - f(x^*(\tau), u^*(\tau))$ a.e. on $\tau \in (0, T)$ for all $\omega \in U$ and $\lambda(\tau) v(\tau) = \lambda(T) v(T) \leq 0$. 
 So $\lambda(\tau) f(x^*(\tau), \omega) \leq \lambda(t) f(x^*(\tau), u^*(\tau))$ a.e. on $\tau \in (0, T)$ for all $\omega \in U$ completing the proof
 
-You may want to look at A.2 and A.3 in https://math.berkeley.edu/~evans/control.course.pdf, @aro23, @aro123 and 4.2.3 and 4.2.4 from @lib2012 for further details.
+You may want to look at A.2 and A.3 in @evans, @aro23, @aro123 and 4.2.3 and 4.2.4 from @lib2012 for further details.
 
 ## Original Proof
 
