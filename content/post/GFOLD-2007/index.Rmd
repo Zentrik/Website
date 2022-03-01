@@ -22,7 +22,8 @@ bibliography: ref.bib
 
 # Summary
 
-The pin-point landing problem has been of significant interest for a long time however, up till now solving the problem in real-time has been infeasible as the problem is nonconvex. Previous approaches have been polynomial guidance which was famously used on the Apollo lunar lander however, this approach does not satsify thrust constraints or non boundary value state constraints. Alternatively a nonconvex optimisation problem could be solved however, this is slow, has no convergence guarantees and depends on good initial guesses. See @lys2018 for a literature review. This novelity of this paper, @aci2007, is to form a convex equivalent problem to the original problem. This means that we can solve the convex problem instead which is an important step to real-time onboard computation of the optimal trajectory. To solve the convex problem, the paper discretises the problem and represents 'the control input by a finite set of basis vectors, which leads to a finite-dimensional  convex  parameter  optimization  problem;  more specifically it leads to a SOCP.'
+The pin-point landing problem has been of significant interest for a long time however, up till now solving the problem in real-time has been infeasible as the problem is nonconvex. Previous approaches to solving the problem have been polynomial guidance which was famously used on the Apollo lunar lander however, this approach does not satisfy thrust constraints or non boundary-value state constraints. Alternatively a nonconvex optimisation problem could be solved however, this is slow, has no convergence guarantees and depends on good initial guesses. See @lys2018 for a literature review. The novelty of this paper, @aci2007, is to form an equivalent convex problem to the original problem. This means that we can solve the convex problem instead which is an important step to real-time onboard computation of the optimal trajectory. To solve the convex problem, the paper discretises the problem and represents 'the control input by a finite set of basis vectors, which leads to a finite-dimensional convex  parameter optimization problem;  more specifically it leads to a SOCP' (Second-order cone
+programming problem).
 
 # Notation
 $y \in [a, b]$ --- $y$ is in the range $a$ to $b$ inclusive, $a \leq x \leq b$
@@ -208,7 +209,7 @@ Consider a solution of [Problem 2] given by $[t_f^*, T_c^*(\bullet), \Gamma^*(\b
 Then, $[t_f^*, T_c^* (\bullet)]$ is also a solution of [Problem 1] and $||T_c^*(t)|| = \rho_1$ or $||T_c^*(t)|| = \rho_2$ for $t \in [0, t_f^*]$.
 :::
 
-You might want to check out my [notes](/post/pontryagin) on Pontryagin's principle first if you don't already understand it .
+You might want to check out my [notes](/post/pontryagin) on Pontryagin's principle first if you don't already understand it.
 
 ::: {.proof}
 Let $y = [x^T,\ m]^T$ and $x = [x_1^T, x_2^T] = [r, \dot{r}]$, then $\dot{y} = [x_2,\ g + T_c / m,\ - \alpha \Gamma]^T$. The Hamiltonian for [Problem 2] is 
@@ -362,7 +363,7 @@ and so $\dot{r}(t_f) = g t_f + \beta_2 \hat{n} + \dot{r}_0 = 0$. Integrating $\d
   \begin{align*}
     r(t) - r_0 = \dot{r}_0 (t - 0) + g \frac{(t - 0)^2}{2} + \frac{\hat{n}}{\alpha} 
   \end{align*} 
-idk
+I don't know what to do from here.
 ]
 So $r(t_f) = r_0 + \dot{r}_0 t_f + g \frac{t_f^2}{2} + \beta_1 \hat{n} = 0$.
 
@@ -423,7 +424,7 @@ There are 5 conditions that need to be satisfied for an optimal solution to exis
 
 ## Brief Interlude - Boundary Value Problem
 
-When using the Pontryagin's principle you may solve a two-point boundary value problem to obtain the optimal control. I lay it out below.
+When using the Pontryagin's principle you may solve a two-point boundary-value problem to obtain the optimal control. I lay it out below.
 
 We have $x = [r, \dot{r}, m]$ where $r \in \mathbb{R}^3$ and $m \in \mathbb{R}$. We also have $\lambda = [\lambda_1, \lambda_2, \lambda_3]$ where $\lambda_1, \lambda_2 \in \mathbb{R}^3$ and $\lambda_3 \in \mathbb{R}$. $g$ is the gravity vector and $\alpha$ is a given scalar coefficient.
 \begin{align*}
@@ -457,5 +458,7 @@ Additionally, I have found the following quote 'solving the resulted two-point b
 In this section a change of variables is introduced to remove the nonlinear state dynamics due to $\frac{T_c}{m}$ @bla2010 @aci2013.
 
 I don't think I am going to make notes on the rest of this paper or the following papers as I was able to skim it well enough to implement the results for a rocket with solid motors.
+
+Note Nonlinear Optimal Control Theory by Leonard David Berkovitz, Negash G. Medhin is the sequel to citation 23 in @aci2007
 
 # References

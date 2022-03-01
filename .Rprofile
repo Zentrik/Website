@@ -7,6 +7,10 @@ if (file.exists("~/.Rprofile")) {
   base::sys.source("~/.Rprofile", envir = environment())
 }
 
+RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc/"
+.libPaths("C:/Users/rag/Documents/R/win-library/4.1")
+rmarkdown::find_pandoc(dir = RSTUDIO_PANDOC)
+
 # Now set options to customize the behavior of blogdown for this project. Below
 # are a few sample options; for more options, see
 # https://bookdown.org/yihui/blogdown/global-options.html
