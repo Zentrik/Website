@@ -72,7 +72,7 @@ It follows then if we can vary the initial time freely then $H(\psi(t_0)) = 0$ a
 
 It is shown in @lib2012 that the Hamiltonian is a constant with respect to time.
 
-There are many different proofs for Pontryagin’s principle depending on if we have initial/ target sets and what assumptions we make (do we assume everything is differentiable or not?).
+There are many different proofs for Pontryagin’s principle depending on if we have initial/ target sets and what assumptions we make, e.g. do we assume everything is differentiable or not?
 
 An example where Pontryagin’s principle has been applied is the [pin-point landing problem](/post/gfold-2007).
 
