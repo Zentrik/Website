@@ -30,6 +30,8 @@ output:
 bibliography: ref.bib
 ---
 
+# Statement of Pontryagin’s principle
+
 Consider the Bolza problem (@bolza)
 \begin{gather*}
   \min_{u(t), t_0, t_f, x(t_0)} K(t_0, x(t_0), t_f, x(t_f)) + \int_{t_0}^{t_f} L(x(t), u(t), t) \\
@@ -78,7 +80,7 @@ An example where Pontryagin’s principle has been applied is the [pin-point lan
 
 # Proofs
 
-I will outline the different proofs below.
+I will outline some different proofs below.
 
 ## Dynamic Programming
 
@@ -162,7 +164,7 @@ Here are the [slides](Pontryagin’s principle.pptx) for a talk I gave summarisi
 
 # Role of abnormal multiplier $\lambda_0$
 
-I haven't been able to fully work out when $\lambda = 0$ (it may be an open problem) so below I list some results concerning $\lambda_0$.
+I haven't been able to fully work out when $\lambda_0 = 0$ (it may be an open problem) so below I list some results concerning $\lambda_0$.
 
 <!-- When $\lambda_0$ = 0 we have an abnormal problem, implying the system is not controllable/ the normality condition is not satisfied/ fixed time, but non fixed final state will never be abnormal? !-->
 

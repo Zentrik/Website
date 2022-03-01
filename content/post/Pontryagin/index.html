@@ -34,6 +34,7 @@ bibliography: ref.bib
 
 <div id="TOC">
 <ul>
+<li><a href="#statement-of-pontryagins-principle">Statement of Pontryagin’s principle</a></li>
 <li><a href="#proofs">Proofs</a>
 <ul>
 <li><a href="#dynamic-programming">Dynamic Programming</a></li>
@@ -45,6 +46,8 @@ bibliography: ref.bib
 </ul>
 </div>
 
+<div id="statement-of-pontryagins-principle" class="section level1">
+<h1>Statement of Pontryagin’s principle</h1>
 <p>Consider the Bolza problem (<span class="citation"><a href="#ref-bolza" role="doc-biblioref"><span>“Bolza Problem - Encyclopedia of Mathematics”</span></a> (<a href="#ref-bolza" role="doc-biblioref">n.d.</a>)</span>)
 <span class="math display">\[\begin{gather*}
   \min_{u(t), t_0, t_f, x(t_0)} K(t_0, x(t_0), t_f, x(t_f)) + \int_{t_0}^{t_f} L(x(t), u(t), t) \\
@@ -78,9 +81,10 @@ It follows then if we can vary the initial time freely then <span class="math in
 <p>It is shown in <span class="citation"><a href="#ref-lib2012" role="doc-biblioref">Liberzon</a> (<a href="#ref-lib2012" role="doc-biblioref">2012</a>)</span> that the Hamiltonian is a constant with respect to time.</p>
 <p>There are many different proofs for Pontryagin’s principle depending on if we have initial/ target sets and what assumptions we make, e.g. do we assume everything is differentiable or not?</p>
 <p>An example where Pontryagin’s principle has been applied is the <a href="/post/gfold-2007">pin-point landing problem</a>.</p>
+</div>
 <div id="proofs" class="section level1">
 <h1>Proofs</h1>
-<p>I will outline the different proofs below.</p>
+<p>I will outline some different proofs below.</p>
 <div id="dynamic-programming" class="section level2">
 <h2>Dynamic Programming</h2>
 <p>There is the dynamic programming approach in <span class="citation"><a href="#ref-ber2017" role="doc-biblioref">Bertsekas</a> (<a href="#ref-ber2017" role="doc-biblioref">2017</a>)</span> or <span class="citation"><a href="#ref-lib2012" role="doc-biblioref">Liberzon</a> (<a href="#ref-lib2012" role="doc-biblioref">2012</a>)</span>.</p>
@@ -154,7 +158,7 @@ I quite like this proof as it gives a clear geometric intuition.</p>
 </div>
 <div id="role-of-abnormal-multiplier-lambda_0" class="section level1">
 <h1>Role of abnormal multiplier <span class="math inline">\(\lambda_0\)</span></h1>
-<p>I haven’t been able to fully work out when <span class="math inline">\(\lambda = 0\)</span> (it may be an open problem) so below I list some results concerning <span class="math inline">\(\lambda_0\)</span>.</p>
+<p>I haven’t been able to fully work out when <span class="math inline">\(\lambda_0 = 0\)</span> (it may be an open problem) so below I list some results concerning <span class="math inline">\(\lambda_0\)</span>.</p>
 <!-- When $\lambda_0$ = 0 we have an abnormal problem, implying the system is not controllable/ the normality condition is not satisfied/ fixed time, but non fixed final state will never be abnormal? !-->
 <p>For linear control systems all trajectories for uncontrollable systems are possibly abnormal extremals (i.e. <span class="math inline">\(\lambda_0\)</span> can be <span class="math inline">\(0\)</span> but it doesn’t have to be <span class="math inline">\(0\)</span>) <span class="citation"><a href="#ref-lewis" role="doc-biblioref"><span>“The Maximum Principle of Pontryagin in Control and in Optimal Control”</span></a> (<a href="#ref-lewis" role="doc-biblioref">n.d.</a>)</span>.</p>
 <p>In the original proof we have a separating hyperplane and <span class="math inline">\(\lambda_0 = 0 \iff\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> the separating hyperplane is vertical.</p>
