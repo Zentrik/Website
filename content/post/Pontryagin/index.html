@@ -6,7 +6,7 @@ author:
 tags: []
 categories: []
 date: "2021-06-27T17:00:45.785Z" #"2021-06-27T17:00:45.785Z"
-lastMod: "2022-03-01"
+lastMod: "2022-03-02"
 featured: false
 draft: false
 
@@ -105,7 +105,7 @@ Now, we know a small increase in <span class="math inline">\(\epsilon\)</span> a
 \end{gather*}\]</span>
 Let <span class="math inline">\(\lambda(T) = - \nabla K(x^*(t))\)</span> and <span class="math inline">\(v(t) = \left. \frac{\partial}{\partial \epsilon} \right|_{\epsilon=0^+} x_\epsilon(t)\)</span>. So <span class="math inline">\(\lambda(T) v(T) \leq 0\)</span></p>
 <p>We want to show <span class="math inline">\(\lambda(t)f(x^*, u^*) \geq \lambda(t)f(x^*, w)\)</span> for all <span class="math inline">\(w \in U\)</span> and <span class="math inline">\(t \in [0, T]\)</span>. If we construct <span class="math inline">\(v(t) = f(x^*, w) - f(x^*, u^*)\)</span> then we can see the statement is true when <span class="math inline">\(t = T\)</span>. Additionally if we can show <span class="math inline">\(\lambda(t)v(t)\)</span> has the same sign for all <span class="math inline">\(t \in [0, T]\)</span> then we see the desired results follows.</p>
-<p>We want a variation that causes a small change to the state as we don’t want to violate any state constraints.
+<p>We consider control ``perturbations that may be large in magnitude by are confined to small time intervals. The net effect on the trajectory of such perturbations will then be small’’ <span class="citation"><a href="#ref-hoc1991" role="doc-biblioref">Hocking</a> (<a href="#ref-hoc1991" role="doc-biblioref">1991</a>)</span>.
 It turns out we can use a type of variation called a needle variation which is defined as:
 <span class="math display">\[\begin{align*}
   u_\epsilon(t) = \begin{cases}
@@ -113,7 +113,8 @@ It turns out we can use a type of variation called a needle variation which is d
     u^*(t) &amp; \text{else}
   \end{cases} 
 \end{align*}\]</span>
-where <span class="math inline">\(\tau \in (0, T]\)</span> and <span class="math inline">\(0 &lt; \tau - \epsilon &lt; \tau\)</span> and <span class="math inline">\(\omega \in U\)</span>.</p>
+where <span class="math inline">\(\tau \in (0, T]\)</span> and <span class="math inline">\(0 &lt; \tau - \epsilon &lt; \tau\)</span> and <span class="math inline">\(\omega \in U\)</span>.
+Importantly it is possible to differentiate along a needle variation and they are simple <span class="citation"><a href="#ref-dmi2016" role="doc-biblioref">Dmitruk and Osmolovskii</a> (<a href="#ref-dmi2016" role="doc-biblioref">2016</a>)</span>.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:needle"></span>
 <img src="Needle%20variation.png" alt="@aro123" width="50%" />
 <p class="caption">
@@ -214,6 +215,12 @@ Bertsekas, Dimitri P. 2017. <em>Dynamic Programming and Optimal Control: 1</em>.
 </div>
 <div id="ref-bolza" class="csl-entry">
 <span>“Bolza Problem - Encyclopedia of Mathematics.”</span> n.d. Accessed September 20, 2021. <a href="https://encyclopediaofmath.org/wiki/Bolza_problem">https://encyclopediaofmath.org/wiki/Bolza_problem</a>.
+</div>
+<div id="ref-dmi2016" class="csl-entry">
+Dmitruk, Andrei, and Nikolai Osmolovskii. 2016. <span>“On the Proof of Pontryagin?s Maximum Principle by Means of Needle Variations.”</span> <em>Fundamental and Applied Mathematics</em> 19 (November). <a href="https://doi.org/10.1007/s10958-016-3044-2">https://doi.org/10.1007/s10958-016-3044-2</a>.
+</div>
+<div id="ref-hoc1991" class="csl-entry">
+Hocking, L. M. 1991. <em>Optimal Control: An Introduction to the Theory with Applications</em>. Oxford Applied Mathematics and Computing Science Series. Clarendon Press. <a href="https://books.google.co.uk/books?id=gd7b4FMqXpMC">https://books.google.co.uk/books?id=gd7b4FMqXpMC</a>.
 </div>
 <div id="ref-lib2012" class="csl-entry">
 Liberzon, Daniel. 2012. <em>Calculus of Variations and Optimal Control Theory</em>. <a href="https://press.princeton.edu/books/hardcover/9780691151878/calculus-of-variations-and-optimal-control-theory">https://press.princeton.edu/books/hardcover/9780691151878/calculus-of-variations-and-optimal-control-theory</a>.

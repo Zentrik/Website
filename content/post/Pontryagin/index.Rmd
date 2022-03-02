@@ -104,7 +104,7 @@ Let $\lambda(T) = - \nabla K(x^*(t))$ and $v(t) = \left. \frac{\partial}{\partia
 
 We want to show $\lambda(t)f(x^*, u^*) \geq \lambda(t)f(x^*, w)$ for all $w \in U$ and $t \in [0, T]$. If we construct $v(t) = f(x^*, w) - f(x^*, u^*)$ then we can see the statement is true when $t = T$. Additionally if we can show $\lambda(t)v(t)$ has the same sign for all $t \in [0, T]$ then we see the desired results follows.
 
-We want a variation that causes a small change to the state as we don't want to violate any state constraints.
+We consider control ``perturbations that may be large in magnitude by are confined to small time intervals. The net effect on the trajectory of such perturbations will then be small'' @hoc1991. 
 It turns out we can use a type of variation called a needle variation which is defined as:
 \begin{align*}
   u_\epsilon(t) = \begin{cases}
@@ -113,6 +113,7 @@ It turns out we can use a type of variation called a needle variation which is d
   \end{cases} 
 \end{align*} 
 where $\tau \in (0, T]$ and $0 < \tau - \epsilon < \tau$ and $\omega \in U$.
+Importantly it is possible to differentiate along a needle variation and they are simple @dmi2016.
 
 ```{r needle, echo = FALSE, fig.cap = "@aro123", fig.align="center", out.width = "50%"}
 knitr::include_graphics("Needle variation.png")
