@@ -1,6 +1,6 @@
 ---
 title: Pontryagin's minimum principle
-summary: A brief summary of the proof of pontryagin's minimum principle and explanation of $\lambda_0$
+summary: A brief summary of the proof of pontryagin's minimum principle and an explanation of $\lambda_0$
 author:
 - admin
 tags: []
@@ -171,7 +171,7 @@ I haven't been able to fully work out when $\lambda_0 = 0$ (it may be an open pr
 
 For linear control systems all  trajectories  for  uncontrollable  systems  are  possibly  abnormal extremals (i.e. $\lambda_0$ can be $0$ but it doesn't have to be $0$) @lewis.
 
-In the original proof we have a separating hyperplane and $\lambda_0 = 0 \iff$^[$\iff$ - iff, stands for if and only if,$A \iff B$ is equivalent ti $A \implies B$ and $B \implies A$ both being true] the separating hyperplane is vertical.
+In the original proof we have a separating hyperplane and $\lambda_0 = 0 \iff$^[$\iff$ - iff, stands for if and only if,$A \iff B$ is equivalent to $A \implies B$ and $B \implies A$ both being true] the separating hyperplane is vertical.
 
 Claim: $(-1, 0, \dots, 0)$ lies on the boundary of the tangent cone $\iff \lambda_0$ has to be $0$^[It is possible for $\lambda_0$ to be either $0$ or $1$ for some problems.], i.e. $\lambda_0 = -1$ doesn't generate any valid solutions.
 

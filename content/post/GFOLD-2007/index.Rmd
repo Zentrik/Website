@@ -76,7 +76,7 @@ The magnitude of the net thrust vector is constrained by
   0 < \rho_{1} \leq ||T_c(t)|| \leq \rho_{2} \; \forall \; t \in [0, t_f] (\#eq:3)
 \end{align*}
 
-The intial and final position and velocity, and the initial mass are specified,
+The initial and final position and velocity, and the initial mass are specified,
 \begin{align*}
   m(0) = m_{wet}, \hspace{1cm} r(0) &= r_0, \hspace{1cm} \dot{r}(0) = \dot{r}_0 (\#eq:4) \\
   r(t_{f}) = \dot{r}(t_{f}) &= 0 (\#eq:5)
