@@ -22,8 +22,12 @@ bibliography: ref.bib
 
 # Summary
 
-The pin-point landing problem has been of significant interest for a long time however, up till now solving the problem in real-time has been infeasible as the problem is nonconvex. Previous approaches to solving the problem have been polynomial guidance which was famously used on the Apollo lunar lander however, this approach does not satisfy thrust constraints or non boundary-value state constraints. Alternatively a nonconvex optimisation problem could be solved however, this is slow, has no convergence guarantees and depends on good initial guesses. See @lys2018 for a literature review. The novelty of this paper, @aci2007, is to form an equivalent convex problem to the original problem. This means that we can solve the convex problem instead which is an important step to real-time onboard computation of the optimal trajectory. To solve the convex problem, the paper discretises the problem and represents 'the control input by a finite set of basis vectors, which leads to a finite-dimensional convex  parameter optimization problem;  more specifically it leads to a SOCP' (Second-order cone
-programming problem).
+The pin-point landing problem has been of significant interest for a long time however, up till now solving the problem in real-time has been infeasible as the problem is nonconvex. 
+Previous approaches to solving the problem have been polynomial guidance which was famously used on the Apollo lunar lander however, this approach does not satisfy thrust constraints or non boundary-value state constraints. 
+Alternatively a nonconvex optimisation problem could be solved however, this is slow, has no convergence guarantees and depends on good initial guesses. See @lys2018 for a literature review. 
+The novelty of this paper, @aci2007, is to form an equivalent convex problem to the original problem. 
+This means that we can solve the convex problem instead which is an important step towards real-time onboard computation of the optimal trajectory. 
+To solve the convex problem, the paper discretises the problem and represents 'the control input by a finite set of basis vectors, which leads to a finite-dimensional convex  parameter optimization problem; more specifically it leads to a SOCP' (Second-order cone programming problem).
 
 # Notation
 $y \in [a, b]$ --- $y$ is in the range $a$ to $b$ inclusive, $a \leq x \leq b$
