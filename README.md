@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/b9693837-74f6-4445-94b0-644e9583ef07/deploy-status)](https://app.netlify.com/sites/awesome-kepler-a2b0e7/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b9693837-74f6-4445-94b0-644e9583ef07/deploy-status)](https://app.netlify.com/sites/tealquaternion/deploys)
 
 <!--<p align="center"><a href="https://wowchemy.com" target="_blank" rel="noopener"><img src="https://sourcethemes.com/academic/img/logo_200px.png" alt="Wowchemy Website Builder"></a></p>-->
 
