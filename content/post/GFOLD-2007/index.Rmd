@@ -52,7 +52,7 @@ $\ddot{r}(t)$ --- Acceleration vector spacecraft at time t relative to surface
 
 $\; \forall \;$ --- for all
 
-a.e. --- almost everywhere, for all elements in a set except for any elements also in another set of measure 0. Any finite set is measure.
+a.e. --- almost everywhere, for all elements in a set except for any elements also in another set of measure 0. Any finite set is measure 0.
 
 $e_i$ --- a vector with $0$s everywhere except for the $i$th position where it is $1$.
 
